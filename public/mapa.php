@@ -70,7 +70,7 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
     <link href="css/layout.css" rel="stylesheet">
     <style>
         #content { padding: 0; position: relative; }
-        #map { height: calc(100vh - var(--topbar-height)); width: 100%; }
+        #map { height: calc(100vh - var(--topbar-height) - var(--footer-height)); width: 100%; }
 
         #layer-panel {
             position: absolute;
@@ -83,7 +83,7 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
             font-size: .82rem;
             color: #ccc;
             min-width: 170px;
-            max-height: calc(100vh - var(--topbar-height) - 80px);
+            max-height: calc(100vh - var(--topbar-height) - var(--footer-height) - 20px);
             overflow-y: auto;
             backdrop-filter: blur(4px);
         }
@@ -129,6 +129,12 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
     <div id="content">
         <div id="map"></div>
         <div id="layer-panel"></div>
+        <div style="position:absolute;bottom:30px;left:10px;z-index:10;background:rgba(10,18,35,.75);color:#555;font-size:.7rem;padding:4px 10px;border-radius:4px;backdrop-filter:blur(2px);line-height:1.8">
+            © <?= date('Y') ?>
+            <a href="https://www.skydronex.com" target="_blank" rel="noopener" style="color:#778;text-decoration:none" onmouseover="this.style.color='#aab'" onmouseout="this.style.color='#778'">SkyDronex</a> ·
+            <a href="https://www.icarusrpa.info" target="_blank" rel="noopener" style="color:#778;text-decoration:none" onmouseover="this.style.color='#aab'" onmouseout="this.style.color='#778'">IcarusRPA</a> ·
+            <a href="https://www.github.com/DoverKan" target="_blank" rel="noopener" style="color:#778;text-decoration:none" onmouseover="this.style.color='#aab'" onmouseout="this.style.color='#778'">DoverKan</a>
+        </div>
     </div>
 </main>
 
@@ -1267,5 +1273,6 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
 })();
 </script>
 
+<?php include __DIR__ . '/partials/footer.php'; ?>
 </body>
 </html>

@@ -106,5 +106,6 @@ $typeBadge = ['feeder' => 'bg-info', 'box' => 'bg-warning text-dark'];
 })();
 </script>
 
+<?php include __DIR__ . '/partials/footer.php'; ?>
 </body>
 </html>
