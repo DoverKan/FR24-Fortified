@@ -236,4 +236,9 @@ El archivo `config/config.php` está excluido de git mediante `.gitignore` para 
 
 ## Licencia
 
-Proyecto privado. Todos los derechos reservados.
+Este proyecto está licenciado bajo [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) — consulta el archivo [LICENSE](LICENSE) para más detalles.
+
+Puedes usar, modificar y redistribuir este proyecto siempre que:
+- **Cites al autor** (DoverKan) de forma apropiada
+- **No lo uses con fines comerciales**
+- **Distribuyas las obras derivadas** bajo la misma licencia
