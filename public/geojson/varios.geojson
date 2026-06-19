@@ -1,0 +1,204 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -7.002338,
+          38.8833621
+        ]
+      },
+      "properties": {
+        "nombre": "LEBN",
+        "descripcion": "Helipuerto Hospital Universitario de Badajoz",
+        "tipo": "Helipuerto",
+        "icon": "helipad",
+        "fill": "#f87171"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.978354,
+          38.8769575
+        ]
+      },
+      "properties": {
+        "nombre": "CNP",
+        "descripcion": "Helipuerto Policia Nacional",
+        "tipo": "Helipuerto",
+        "icon": "helipad",
+        "fill": "#f87171"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.896812,
+          39.022819
+        ]
+      },
+      "properties": {
+        "nombre": "CMB",
+        "descripcion": "Helipuerto Cuartel de Menacho Botoa",
+        "tipo": "Helipuerto",
+        "icon": "helipad",
+        "fill": "#f87171"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.957353,
+          38.871231
+        ]
+      },
+      "properties": {
+        "nombre": "SOAR",
+        "descripcion": "Alberto AMB99",
+        "tipo": "Antena",
+        "icon": "antena",
+        "fill": "#a78bfa"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.93105,
+          38.87973
+        ]
+      },
+      "properties": {
+        "nombre": "MGO242",
+        "descripcion": "Panchuli",
+        "tipo": "Antena",
+        "icon": "antena",
+        "fill": "#a78bfa"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.969167,
+          38.871687
+        ]
+      },
+      "properties": {
+        "nombre": "MGO91",
+        "descripcion": "Manyula",
+        "tipo": "Antena",
+        "icon": "antena",
+        "fill": "#a78bfa"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.983803,
+          38.864866
+        ]
+      },
+      "properties": {
+        "nombre": "DAN",
+        "descripcion": "Verde",
+        "tipo": "Antena",
+        "icon": "antena",
+        "fill": "#a78bfa"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.633889,
+          38.786667
+        ]
+      },
+      "properties": {
+        "nombre": "M10 31",
+        "descripcion": "Milla 10 31",
+        "tipo": "M",
+        "icon": "vp",
+        "fill": "#fbbf24"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -7.008611,
+          38.995833
+        ]
+      },
+      "properties": {
+        "nombre": "M10 13",
+        "descripcion": "Milla 10 13",
+        "tipo": "M",
+        "icon": "vp",
+        "fill": "#fbbf24"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "a",
+        "descripcion": "a",
+        "tipo": "LINEA",
+        "icon": "a",
+        "fill": "a"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -6.633889,
+            38.786667
+          ],
+          [
+            -6.8224285,
+            38.8919209
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "a",
+        "descripcion": "a",
+        "tipo": "LINEA",
+        "icon": "a",
+        "fill": "a"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -7.008611,
+            38.995833
+          ],
+          [
+            -6.822428,
+            38.8919205
+          ]
+        ]
+      }
+    }
+  ]
+}

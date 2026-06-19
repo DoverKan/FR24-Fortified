@@ -1,0 +1,125 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Badajoz",
+        "fill": "#FF5733",
+        "descripcion": {
+          "icao": "LEBZ",
+          "notas": ""
+        },
+        "icon": "airport",
+        "tipo": "Aeropuerto"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.8224393,
+          38.8919176
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "fill": "#33FF57",
+        "nombre": "Beja",
+        "descripcion": {
+          "icao": "LPBJ",
+          "notas": ""
+        },
+        "icon": "airport",
+        "tipo": "Aeropuerto"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -7.9324806,
+          38.0788183
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "El Manantio",
+        "fill": "#3357FF",
+        "descripcion": {
+          "icao": "LEEM",
+          "notas": ""
+        },
+        "tipo": "Aeropuerto",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.9911264,
+          38.7775416
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Patiño",
+        "fill": "#FFC300",
+        "descripcion": {
+          "icao": "LEPN",
+          "notas": ""
+        },
+        "icon": "airport",
+        "tipo": "Aeropuerto"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -7.0000437,
+          38.7053626
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "El Potosí",
+        "descripcion": {
+          "icao": "ZZZZ",
+          "notas": ""
+        },
+        "fill": "#DAF7A6",
+        "tipo": "Aeropuerto",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.8376859,
+          38.8552125
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "fill": "#900C3F",
+        "descripcion": {
+          "icao": "LETE",
+          "notas": ""
+        },
+        "nombre": "Morante",
+        "tipo": "Aeropuerto",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.6906455,
+          39.0368878
+        ]
+      }
+    }
+  ]
+}

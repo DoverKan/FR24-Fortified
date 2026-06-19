@@ -1,0 +1,73 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Hospita",
+        "nombre": "Hospital Perpetuo Socorro",
+        "descripcion": {
+          "notas": ""
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.9715366,
+          38.8665193
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Hospita",
+        "nombre": "Hospital Materno Infantil",
+        "descripcion": {
+          "notas": ""
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.97142,
+          38.8659724
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Clideba",
+        "tipo": "Hospita",
+        "descripcion": {
+          "notas": ""
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.990321,
+          38.8711959
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Hospita",
+        "nombre": "Hospital Universitario",
+        "descripcion": {
+          "notas": ""
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -7.0010626,
+          38.8844545
+        ]
+      }
+    }
+  ]
+}

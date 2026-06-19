@@ -1,0 +1,29 @@
+# Config con credenciales (usar config.example.php como plantilla)
+config/config.php
+fr24-standalone.php
+
+# Dependencias
+/vendor/
+
+# Variables de entorno
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+/logs/
+
+# Caché y datos temporales
+/cache/
+/tmp/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace

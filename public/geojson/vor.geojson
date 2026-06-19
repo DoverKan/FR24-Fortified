@@ -1,0 +1,285 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Cáceres",
+        "descripcion": {
+          "identificador": "CCS",
+          "frecuencia": "114.10"
+        },
+        "fill": "#22d3ee",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.3361,
+          39.4739
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Hinojosa",
+        "descripcion": {
+          "identificador": "HIJ",
+          "frecuencia": "113.30"
+        },
+        "fill": "#22d3ee",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -5.15,
+          38.4667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Badajoz",
+        "descripcion": {
+          "identificador": "VBZ",
+          "frecuencia": "116.80"
+        },
+        "fill": "#22d3ee",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.815753,
+          38.88988
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Lisboa",
+        "descripcion": {
+          "identificador": "LIS",
+          "frecuencia": "114.80"
+        },
+        "fill": "#22d3ee",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -9.1308,
+          38.7631
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Cascais",
+        "descripcion": {
+          "identificador": "CAS",
+          "frecuencia": "114.50"
+        },
+        "fill": "#22d3ee",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -9.4197,
+          38.7244
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Sevilla",
+        "descripcion": {
+          "identificador": "SVL",
+          "frecuencia": "114.90"
+        },
+        "fill": "#22d3ee",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -5.8797,
+          37.418
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Toledo",
+        "descripcion": {
+          "identificador": "TLD",
+          "frecuencia": "117.60"
+        },
+        "fill": "#22d3ee",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.0219,
+          39.8836
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Salamanca",
+        "descripcion": {
+          "identificador": "BBI",
+          "frecuencia": "112.10"
+        },
+        "fill": "#22d3ee",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -5.5019,
+          40.9522
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Fátima",
+        "descripcion": {
+          "identificador": "FTM",
+          "frecuencia": "113.50"
+        },
+        "fill": "#22d3ee",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.6333,
+          39.6167
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Nisa",
+        "descripcion": {
+          "identificador": "NSA",
+          "frecuencia": "115.50"
+        },
+        "fill": "#22d3ee",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -7.9144,
+          39.5647
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Villatobas",
+        "descripcion": {
+          "identificador": "VTB",
+          "frecuencia": "112.70"
+        },
+        "fill": "#22d3ee",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -3.7638,
+          39.7805
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Sagrado",
+        "descripcion": {
+          "identificador": "SGR",
+          "frecuencia": "113.90"
+        },
+        "fill": "#22d3ee",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.9463,
+          37.0836
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Faro",
+        "descripcion": {
+          "identificador": "VFA",
+          "frecuencia": "112.80"
+        },
+        "fill": "#22d3ee",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -7.975,
+          37.0133
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Jerez",
+        "descripcion": {
+          "identificador": "JRZ",
+          "frecuencia": "113.00"
+        },
+        "fill": "#22d3ee",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.0263,
+          36.815
+        ]
+      }
+    }
+  ]
+}

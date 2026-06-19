@@ -1,0 +1,81 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "N",
+        "descripcion": {
+          "nombre": "Botoa"
+        },
+        "tipo": "VP",
+        "fill": "#f472b6",
+        "icon": "vp"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.904722,
+          39.008889
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "E",
+        "descripcion": {
+          "nombre": "Montijo"
+        },
+        "tipo": "VP",
+        "fill": "#f472b6",
+        "icon": "vp"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.618056,
+          38.908889
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "S",
+        "descripcion": {
+          "nombre": "La Albuera"
+        },
+        "tipo": "VP",
+        "fill": "#f472b6",
+        "icon": "vp"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.823056,
+          38.717222
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "W",
+        "descripcion": {
+          "nombre": "Carcel"
+        },
+        "tipo": "VP",
+        "fill": "#f472b6",
+        "icon": "vp"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -7.001389,
+          38.828889
+        ]
+      }
+    }
+  ]
+}
