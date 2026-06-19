@@ -49,32 +49,28 @@ sudo git clone https://github.com/DoverKan/FR24-Fortified.git fr24
 sudo chown -R www-data:www-data /var/www/html/fr24
 ```
 
-### 3. Configurar el VirtualHost de Apache
+### 3. Configurar el Alias en Apache
 
-Crear el archivo de sitio:
+Editar la configuración del sitio por defecto:
 
 ```bash
-sudo nano /etc/apache2/sites-available/fr24.conf
+sudo nano /etc/apache2/sites-available/000-default.conf
 ```
 
-Contenido:
+Añadir dentro del bloque `<VirtualHost *:80>`:
 
 ```apache
-<VirtualHost *:80>
-    ServerName fr24.local
-    DocumentRoot /var/www/html/fr24/public
+Alias /fr24 /var/www/html/fr24/public
 
-    <Directory /var/www/html/fr24/public>
-        AllowOverride All
-        Require all granted
-    </Directory>
-</VirtualHost>
+<Directory /var/www/html/fr24/public>
+    AllowOverride All
+    Require all granted
+</Directory>
 ```
 
-Activar el sitio:
+Activar el módulo rewrite y recargar Apache:
 
 ```bash
-sudo a2ensite fr24.conf
 sudo a2enmod rewrite
 sudo systemctl reload apache2
 ```
@@ -88,7 +84,7 @@ sudo nano /var/www/html/fr24/config/config.php
 
 ### 5. Acceder al dashboard
 
-Abre el navegador en `http://localhost` o en la IP del servidor.
+Abre el navegador en `http://localhost/fr24`
 
 ---
 
