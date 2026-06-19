@@ -1,6 +1,5 @@
 # Config con credenciales (usar config.example.php como plantilla)
 config/config.php
-fr24-standalone.php
 
 # Dependencias
 /vendor/
