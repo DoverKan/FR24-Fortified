@@ -753,7 +753,7 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
     function addDistanceRings() {
         if (lat === null || lon === null) return;
 
-        const NM_RINGS = [5, 10, 25, 50, 100, 150];
+        const NM_RINGS = [5, 10, 25, 50, 100, 150, 200, 250];
 
         function ringCoords(cLng, cLat, nm, steps) {
             const r = nm * 1852, R = 6371000;
