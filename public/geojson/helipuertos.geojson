@@ -1,0 +1,362 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.978354,
+          38.8769575
+        ]
+      },
+      "properties": {
+        "nombre": "CNP",
+        "descripcion": "Policia Nacional",
+        "tipo": "Helipuerto",
+        "icon": "helipad",
+        "fill": "#FF7043"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.896812,
+          39.022819
+        ]
+      },
+      "properties": {
+        "nombre": "CMB",
+        "descripcion": "Cuartel de Menacho Botoa",
+        "tipo": "Helipuerto",
+        "icon": "helipad",
+        "fill": "#FF7043"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Hospital Universitario de Badajoz",
+        "fill": "#FF7043",
+        "descripcion": {
+          "icao": "ZZZZ",
+          "notas": "Sanitario / SES"
+        },
+        "tipo": "Helipuerto",
+        "icon": "helipad"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-7.002338, 38.8833621]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Hospital San Pedro de Alcántara (Cáceres)",
+        "fill": "#FF7043",
+        "descripcion": {
+          "icao": "ZZZZ",
+          "notas": "Sanitario / SES"
+        },
+        "tipo": "Helipuerto",
+        "icon": "helipad"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-6.3792, 39.4658]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Hospital de Mérida",
+        "fill": "#FF7043",
+        "descripcion": {
+          "icao": "ZZZZ",
+          "notas": "Sanitario / SES"
+        },
+        "tipo": "Helipuerto",
+        "icon": "helipad"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-6.3242, 38.9325]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Hospital Virgen del Puerto (Plasencia)",
+        "fill": "#FF7043",
+        "descripcion": {
+          "icao": "ZZZZ",
+          "notas": "Sanitario / SES"
+        },
+        "tipo": "Helipuerto",
+        "icon": "helipad"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-6.0945, 40.0416]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Hospital Don Benito-Villanueva",
+        "fill": "#FF7043",
+        "descripcion": {
+          "icao": "ZZZZ",
+          "notas": "Sanitario / SES"
+        },
+        "tipo": "Helipuerto",
+        "icon": "helipad"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-5.8778, 38.9667]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Hospital Campo Arañuelo (Navalmoral)",
+        "fill": "#FF7043",
+        "descripcion": {
+          "icao": "ZZZZ",
+          "notas": "Sanitario / SES"
+        },
+        "tipo": "Helipuerto",
+        "icon": "helipad"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-5.5492, 39.8967]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Hospital Ciudad de Coria",
+        "fill": "#FF7043",
+        "descripcion": {
+          "icao": "ZZZZ",
+          "notas": "Sanitario / SES"
+        },
+        "tipo": "Helipuerto",
+        "icon": "helipad"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-6.5322, 39.9881]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Hospital de Llerena",
+        "fill": "#FF7043",
+        "descripcion": {
+          "icao": "ZZZZ",
+          "notas": "Sanitario / SES"
+        },
+        "tipo": "Helipuerto",
+        "icon": "helipad"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-6.0125, 38.2435]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Hospital de Zafra",
+        "fill": "#FF7043",
+        "descripcion": {
+          "icao": "ZZZZ",
+          "notas": "Sanitario / SES"
+        },
+        "tipo": "Helipuerto",
+        "icon": "helipad"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-6.4081, 38.4239]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Hospital de Talarrubias",
+        "fill": "#FF7043",
+        "descripcion": {
+          "icao": "ZZZZ",
+          "notas": "Sanitario / SES"
+        },
+        "tipo": "Helipuerto",
+        "icon": "helipad"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-5.2307, 39.0305]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Base Militar General Menacho (Bótoa)",
+        "fill": "#FF7043",
+        "descripcion": {
+          "icao": "ZZZZ",
+          "notas": "Militar / Ejército de Tierra"
+        },
+        "tipo": "Helipuerto",
+        "icon": "helipad"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-6.9083, 38.9926]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Base INFOEX Hoyos",
+        "fill": "#FF7043",
+        "descripcion": {
+          "icao": "ZZZZ",
+          "notas": "Incendios Forestales / INFOEX"
+        },
+        "tipo": "Helipuerto",
+        "icon": "helipad"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-6.7212, 40.1702]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Base INFOEX Caminomorisco",
+        "fill": "#FF7043",
+        "descripcion": {
+          "icao": "ZZZZ",
+          "notas": "Incendios Forestales / INFOEX"
+        },
+        "tipo": "Helipuerto",
+        "icon": "helipad"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-6.2905, 40.3278]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Base INFOEX Jarandilla de la Vera",
+        "fill": "#FF7043",
+        "descripcion": {
+          "icao": "ZZZZ",
+          "notas": "Incendios Forestales / INFOEX"
+        },
+        "tipo": "Helipuerto",
+        "icon": "helipad"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-5.6589, 40.1256]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Base INFOEX Serradilla",
+        "fill": "#FF7043",
+        "descripcion": {
+          "icao": "ZZZZ",
+          "notas": "Incendios Forestales / INFOEX"
+        },
+        "tipo": "Helipuerto",
+        "icon": "helipad"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-6.1333, 39.8275]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Base INFOEX Valencia de Alcántara",
+        "fill": "#FF7043",
+        "descripcion": {
+          "icao": "ZZZZ",
+          "notas": "Incendios Forestales / INFOEX"
+        },
+        "tipo": "Helipuerto",
+        "icon": "helipad"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-7.2405, 39.4087]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Base INFOEX Guadalupe",
+        "fill": "#FF7043",
+        "descripcion": {
+          "icao": "ZZZZ",
+          "notas": "Incendios Forestales / INFOEX"
+        },
+        "tipo": "Helipuerto",
+        "icon": "helipad"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-5.3211, 39.4442]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Base INFOEX Herrera del Duque",
+        "fill": "#FF7043",
+        "descripcion": {
+          "icao": "ZZZZ",
+          "notas": "Incendios Forestales / INFOEX"
+        },
+        "tipo": "Helipuerto",
+        "icon": "helipad"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-5.0487, 39.1718]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Base INFOEX Manchita",
+        "fill": "#FF7043",
+        "descripcion": {
+          "icao": "ZZZZ",
+          "notas": "Incendios Forestales / INFOEX"
+        },
+        "tipo": "Helipuerto",
+        "icon": "helipad"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-6.0223, 38.8152]
+      }
+    }
+  ]
+}

@@ -1,0 +1,209 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "El Manantio",
+        "fill": "#1565C0",
+        "descripcion": {
+          "icao": "LEEM",
+          "notas": "Aeródromo privado / ULM"
+        },
+        "tipo": "ULM",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-6.9911264, 38.7775416]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Patiño",
+        "fill": "#1565C0",
+        "descripcion": {
+          "icao": "LEPN",
+          "notas": "Aeródromo privado / ULM"
+        },
+        "tipo": "ULM",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-7.0000437, 38.7053626]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "El Potosí",
+        "fill": "#1565C0",
+        "descripcion": {
+          "icao": "ZZZZ",
+          "notas": "Aeródromo privado / ULM"
+        },
+        "tipo": "ULM",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-6.8376859, 38.8552125]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Morante",
+        "fill": "#1565C0",
+        "descripcion": {
+          "icao": "LETE",
+          "notas": "Aeródromo privado / ULM"
+        },
+        "tipo": "ULM",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-6.6906455, 39.0368878]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Royanejos (Mérida)",
+        "fill": "#1565C0",
+        "descripcion": {
+          "icao": "ZZZZ",
+          "notas": "Aeródromo privado / ULM"
+        },
+        "tipo": "ULM",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-6.3861, 39.0169]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "La Cervera (Casar de Cáceres)",
+        "fill": "#1565C0",
+        "descripcion": {
+          "icao": "ZZZZ",
+          "notas": "Aeródromo privado / ULM"
+        },
+        "tipo": "ULM",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-6.4463, 39.5222]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "La Dehesa (Don Benito)",
+        "fill": "#1565C0",
+        "descripcion": {
+          "icao": "ZZZZ",
+          "notas": "Aeródromo privado / ULM"
+        },
+        "tipo": "ULM",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-5.8452, 38.9619]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Fregenal de la Sierra",
+        "fill": "#1565C0",
+        "descripcion": {
+          "icao": "ZZZZ",
+          "notas": "Aeródromo privado / ULM"
+        },
+        "tipo": "ULM",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-6.6358, 38.1561]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Puebla de la Calzada",
+        "fill": "#1565C0",
+        "descripcion": {
+          "icao": "ZZZZ",
+          "notas": "Aeródromo privado / ULM"
+        },
+        "tipo": "ULM",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-6.6083, 38.8877]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Guareña",
+        "fill": "#1565C0",
+        "descripcion": {
+          "icao": "ZZZZ",
+          "notas": "Aeródromo privado / ULM"
+        },
+        "tipo": "ULM",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-6.0355, 38.8558]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Alconétar (Garrovillas)",
+        "fill": "#1565C0",
+        "descripcion": {
+          "icao": "ZZZZ",
+          "notas": "Aeródromo privado / ULM"
+        },
+        "tipo": "ULM",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-6.4388, 39.7333]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Gabriel y Galán (Zarza de Granadilla)",
+        "fill": "#1565C0",
+        "descripcion": {
+          "icao": "ZZZZ",
+          "notas": "Aeródromo privado / Centro de Innovación Deportiva 'El Anillo'"
+        },
+        "tipo": "ULM",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-6.1555, 40.2311]
+      }
+    }
+  ]
+}

@@ -348,7 +348,7 @@
           "superior": "FL450",
           "inferior": "SFC"
         },
-        "fill": "#4a9eda",
+        "fill": "#EF5350",
         "tipo": "LER",
         "icon": ""
       }
@@ -1280,7 +1280,7 @@
           "superior": "FL245",
           "inferior": "5000ft ALT"
         },
-        "fill": "#4a9eda",
+        "fill": "#EF5350",
         "tipo": "LER",
         "icon": ""
       }

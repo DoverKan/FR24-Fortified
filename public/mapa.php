@@ -116,6 +116,8 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
         }
         .mapboxgl-popup-close-button { color: #888 !important; font-size: 1rem !important; }
         .mapboxgl-popup-tip { border-top-color: rgba(10,18,35,.95) !important; }
+        @keyframes ac-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+        .ac-emergency-pulse { animation: ac-pulse .8s ease-in-out infinite; }
     </style>
 </head>
 <body class="sidebar-collapsed">
@@ -134,6 +136,7 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
 <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.4.3/mapbox-gl-draw.js"></script>
 <script src="https://unpkg.com/mapbox-gl-controls@2.4.0/lib/controls.js"></script>
 <script src="https://unpkg.com/@watergis/mapbox-gl-elevation@latest/dist/mapbox-gl-elevation.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
 (function () {
     const mapboxToken  = <?= json_encode($mapboxToken) ?>;
@@ -193,10 +196,76 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
         antialias: true,
         projection: 'globe',
         hash: true,
+        preserveDrawingBuffer: true,
     });
+
+    let selectedHex    = null;
+    let followSelected = false;
+    let tracksLocked   = false;
+    let followBtnEl    = null;
+    let trailsBtnEl    = null;
 
     map.addControl(new mapboxgl.FullscreenControl(), 'top-right');
     map.addControl(new mapboxgl.NavigationControl({ visualizePitch: true }), 'top-right');
+
+    map.addControl({
+        onAdd() {
+            const c = document.createElement('div');
+            c.className = 'mapboxgl-ctrl mapboxgl-ctrl-group';
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.title = 'Centrar en aviones';
+            btn.setAttribute('aria-label', 'Centrar en aviones');
+            btn.style.cssText = 'display:flex;align-items:center;justify-content:center;width:29px;height:29px;cursor:pointer';
+            btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'
+                + '<path d="M2,7 L2,2 L7,2"/>'
+                + '<path d="M13,2 L18,2 L18,7"/>'
+                + '<path d="M2,13 L2,18 L7,18"/>'
+                + '<path d="M13,18 L18,18 L18,13"/>'
+                + '<polygon points="10,5.5 12.5,15.5 10,12.5 7.5,15.5" fill="currentColor" stroke="none"/>'
+                + '</svg>';
+            btn.addEventListener('click', () => {
+                const pts = Object.values(AC).filter(a => a.lat != null && a.lon != null);
+                if (!pts.length) return;
+                if (pts.length === 1) { map.flyTo({ center: [pts[0].lon, pts[0].lat], zoom: 10, animate: true }); return; }
+                const bounds = new mapboxgl.LngLatBounds();
+                pts.forEach(a => bounds.extend([a.lon, a.lat]));
+                map.fitBounds(bounds, { padding: 80, maxZoom: 12, animate: true });
+            });
+            c.appendChild(btn);
+            return c;
+        },
+        onRemove() {}
+    }, 'top-right');
+
+    map.addControl({
+        onAdd() {
+            const c = document.createElement('div');
+            c.className = 'mapboxgl-ctrl mapboxgl-ctrl-group';
+            const btn = document.createElement('button');
+            followBtnEl = btn;
+            btn.type = 'button';
+            btn.title = 'Seguir avión seleccionado (pulsa primero en un avión)';
+            btn.setAttribute('aria-label', 'Seguir avión');
+            btn.style.cssText = 'display:flex;align-items:center;justify-content:center;width:29px;height:29px;cursor:pointer';
+            btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">'
+                + '<circle cx="12" cy="12" r="7.5"/>'
+                + '<line x1="12" y1="2" x2="12" y2="5.5"/>'
+                + '<line x1="12" y1="18.5" x2="12" y2="22"/>'
+                + '<line x1="2" y1="12" x2="5.5" y2="12"/>'
+                + '<line x1="18.5" y1="12" x2="22" y2="12"/>'
+                + '<polygon points="12,8 13.8,15.5 12,13 10.2,15.5" fill="currentColor" stroke="none"/>'
+                + '</svg>';
+            btn.addEventListener('click', () => {
+                if (!selectedHex) return;
+                followSelected = !followSelected;
+                updateFollowBtn();
+            });
+            c.appendChild(btn);
+            return c;
+        },
+        onRemove() { followBtnEl = null; }
+    }, 'top-right');
 
     const draw = new MapboxDraw({
         displayControlsDefault: false,
@@ -204,6 +273,88 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
         defaultMode: 'simple_select',
     });
     map.addControl(draw, 'top-right');
+
+    map.addControl({
+        onAdd() {
+            const c = document.createElement('div');
+            c.className = 'mapboxgl-ctrl mapboxgl-ctrl-group';
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.title = 'Exportar mapa como imagen PNG';
+            btn.setAttribute('aria-label', 'Exportar mapa PNG');
+            btn.style.cssText = 'display:flex;align-items:center;justify-content:center;width:29px;height:29px;cursor:pointer';
+            btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'
+                + '<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>'
+                + '<circle cx="12" cy="13" r="4"/>'
+                + '</svg>';
+            btn.addEventListener('click', () => {
+                map.once('render', () => {
+                    // Capture the WebGL canvas first (preserveDrawingBuffer:true ensures it's readable)
+                    const mapDataUrl = map.getCanvas().toDataURL();
+                    html2canvas(document.getElementById('map'), {
+                        useCORS: true,
+                        logging: false,
+                        scale: window.devicePixelRatio || 1,
+                        ignoreElements: el => el.classList?.contains('mapboxgl-control-container'),
+                        onclone: (doc) => {
+                            // Replace the WebGL canvas with a regular <img> so html2canvas renders it correctly
+                            const c = doc.querySelector('#map canvas');
+                            if (c) {
+                                const img = doc.createElement('img');
+                                img.src = mapDataUrl;
+                                img.width  = c.width;
+                                img.height = c.height;
+                                img.style.cssText = c.style.cssText;
+                                c.parentNode.replaceChild(img, c);
+                            }
+                        }
+                    }).then(canvas => {
+                        canvas.toBlob(blob => {
+                            if (!blob) return;
+                            const ts  = new Date().toISOString().slice(0, 19).replace(/[T:]/g, '-');
+                            const url = URL.createObjectURL(blob);
+                            const a   = document.createElement('a');
+                            a.href     = url;
+                            a.download = 'fr24-mapa-' + ts + '.png';
+                            a.click();
+                            URL.revokeObjectURL(url);
+                        }, 'image/png');
+                    });
+                });
+                map.triggerRepaint();
+            });
+            c.appendChild(btn);
+            return c;
+        },
+        onRemove() {}
+    }, 'top-right');
+
+    map.addControl({
+        onAdd() {
+            const c = document.createElement('div');
+            c.className = 'mapboxgl-ctrl mapboxgl-ctrl-group';
+            const btn = document.createElement('button');
+            trailsBtnEl = btn;
+            btn.type = 'button';
+            btn.title = 'Retener todos los tracks';
+            btn.setAttribute('aria-label', 'Retener tracks');
+            btn.style.cssText = 'display:flex;align-items:center;justify-content:center;width:29px;height:29px;cursor:pointer';
+            btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">'
+                + '<path d="M3,19 C6,13 9,19 13,11 C15,7 18,7 21,7"/>'
+                + '<circle cx="21" cy="7" r="3" fill="currentColor" stroke="none"/>'
+                + '</svg>';
+            btn.addEventListener('click', () => {
+                tracksLocked = !tracksLocked;
+                if (!tracksLocked) {
+                    Object.keys(acTrailPts).forEach(hex => { if (!AC[hex]) delete acTrailPts[hex]; });
+                }
+                updateTrailsLockBtn();
+            });
+            c.appendChild(btn);
+            return c;
+        },
+        onRemove() { trailsBtnEl = null; }
+    }, 'top-right');
 
     // mapbox-gl-controls: regla de medición + inspección de coordenadas
     if (typeof mapboxglControls !== 'undefined') {
@@ -300,6 +451,14 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
         } else if (type === 'milestone') {
             svgInner = '<polygon points="13,2 24,13 13,24 2,13" fill="' + rgba + '" stroke="' + f + '" stroke-width="1.5"/>'
                 + '<text x="13" y="17" text-anchor="middle" fill="' + f + '" font-size="8" font-weight="bold" font-family="monospace">NM</text>';
+        } else if (type === 'hospital') {
+            svgInner = '<circle cx="13" cy="13" r="10" fill="' + rgba + '" stroke="' + f + '" stroke-width="1.5"/>'
+                + '<rect x="10" y="7"  width="6" height="12" rx="1.2" fill="' + f + '"/>'
+                + '<rect x="7"  y="10" width="12" height="6"  rx="1.2" fill="' + f + '"/>';
+        } else if (type === 'meshtastic') {
+            svgInner = '<rect x="1" y="1" width="24" height="24" rx="5.5" fill="#6ee57e"/>'
+                + '<line x1="5" y1="21" x2="10" y2="5" stroke="#2d3052" stroke-width="2.4" stroke-linecap="round"/>'
+                + '<polyline points="12,21 17.5,5 23,21" fill="none" stroke="#2d3052" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>';
         } else {
             svgInner = '<circle cx="13" cy="13" r="5" fill="' + f + '"/>';
         }
@@ -310,41 +469,62 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
     }
 
     // ---- Constructores de popup HTML ----
+    function parseDescProp(raw) {
+        if (!raw) return {};
+        if (typeof raw === 'object') return raw;
+        try { const p = JSON.parse(raw); return (p && typeof p === 'object') ? p : {}; } catch(_) { return {}; }
+    }
+
+    function renderDesc(desc) {
+        if (!desc) return '';
+        const d = (typeof desc === 'string') ? (() => { try { const p = JSON.parse(desc); return (p && typeof p === 'object') ? p : desc; } catch(_) { return desc; } })() : desc;
+        if (typeof d === 'string') return `<div style="color:#aaa;margin-top:.25rem">${d}</div>`;
+        const entries = Object.entries(d).filter(([, v]) => v !== '' && v != null);
+        if (!entries.length) return '';
+        return '<table style="border-collapse:collapse;width:100%;margin-top:.35rem">'
+            + entries.map(([k, v]) =>
+                `<tr><td style="color:#888;padding:2px 6px 2px 0;text-transform:capitalize;white-space:nowrap">${k}</td>`
+                + `<td style="color:#ddd">${v}</td></tr>`
+            ).join('')
+            + '</table>';
+    }
+
     function vorPopup(p) {
-        return '<div style="min-width:160px;font-size:.85rem">'
-            + '<div style="font-weight:700;font-size:1rem;margin-bottom:.35rem">'
-            + (p.identifier ?? '?') + ' <span style="font-weight:400;color:#888">' + (p.tipo ?? '') + '</span>'
-            + '</div>'
-            + '<table style="border-collapse:collapse;width:100%">'
-            + '<tr><td style="color:#888;padding:2px 6px 2px 0">Nombre</td><td><strong>' + (p.name ?? '—') + '</strong></td></tr>'
-            + '<tr><td style="color:#888;padding:2px 6px 2px 0">Frecuencia</td><td>' + (p.frecuencia ?? '—') + '</td></tr>'
-            + '<tr><td style="color:#888;padding:2px 6px 2px 0">País</td><td>' + (p.pais ?? '—') + '</td></tr>'
-            + '</table></div>';
+        const desc = parseDescProp(p.descripcion);
+        const id   = desc.identificador ?? p.nombre ?? '?';
+        return `<div style="min-width:160px;font-size:.85rem">
+            <div style="font-weight:700;font-size:1rem;margin-bottom:.15rem;color:#22d3ee">${id}</div>
+            <div style="color:#aaa;font-size:.8rem;margin-bottom:.2rem">${p.nombre ?? ''}</div>
+            ${renderDesc(p.descripcion)}
+        </div>`;
     }
 
     function lerPopup(p) {
-        return '<div style="min-width:140px;font-size:.85rem">'
-            + '<strong style="font-size:1rem">' + (p.nombre ?? '—') + '</strong><br>'
-            + '<table style="border-collapse:collapse;width:100%;margin-top:.35rem">'
-            + '<tr><td style="color:#888;padding:2px 8px 2px 0">Descripción</td><td>' + (p.descripcion ?? '—') + '</td></tr>'
-            + '<tr><td style="color:#888;padding:2px 8px 2px 0">Techo</td><td>' + (p.superior ?? '—') + '</td></tr>'
-            + '<tr><td style="color:#888;padding:2px 8px 2px 0">Base</td><td>' + (p.inferior ?? '—') + '</td></tr>'
-            + '</table></div>';
+        const desc = parseDescProp(p.descripcion);
+        return `<div style="min-width:140px;font-size:.85rem">
+            <strong style="font-size:1rem">${p.nombre ?? '—'}</strong>
+            <table style="border-collapse:collapse;width:100%;margin-top:.35rem">
+                <tr><td style="color:#888;padding:2px 8px 2px 0;white-space:nowrap">Techo</td><td style="color:#ddd">${desc.superior ?? '—'}</td></tr>
+                <tr><td style="color:#888;padding:2px 8px 2px 0;white-space:nowrap">Base</td><td style="color:#ddd">${desc.inferior ?? '—'}</td></tr>
+            </table>
+        </div>`;
     }
 
     function simplePopup(nombre, descripcion) {
-        return '<div style="font-size:.85rem">'
-            + '<strong style="font-size:1rem">' + (nombre ?? '—') + '</strong><br>'
-            + '<span style="color:#aaa">' + (descripcion ?? '') + '</span>'
-            + '</div>';
+        return `<div style="font-size:.85rem">
+            <strong style="font-size:1rem">${nombre ?? '—'}</strong>
+            ${renderDesc(descripcion)}
+        </div>`;
     }
 
     function airportPopup(p) {
-        return '<div style="font-size:.85rem">'
-            + '<strong style="font-size:1rem">' + (p.nombre ?? '—') + '</strong>'
-            + (p.icao ? ' <span style="color:#888;font-size:.8rem">(' + p.icao + ')</span>' : '') + '<br>'
-            + '<span style="color:#aaa">' + (p.descripcion ?? '') + '</span>'
-            + '</div>';
+        const desc = parseDescProp(p.descripcion);
+        const icao = desc.icao ?? null;
+        return `<div style="font-size:.85rem">
+            <strong style="font-size:1rem">${p.nombre ?? '—'}</strong>
+            ${icao ? ` <span style="color:#888;font-size:.8rem">(${icao})</span>` : ''}
+            ${renderDesc(p.descripcion)}
+        </div>`;
     }
 
     // ---- Registros de capas ----
@@ -370,11 +550,36 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
         if (!map.getSource(id)) map.addSource(id, { type: 'geojson', data });
     }
 
-    // ---- Añadir fill + line + label ----
-    function addPolygonLayers(groupId, sourceId, defaultFill, lineWidth, label, popupFn, opacity) {
-        const fillId  = groupId + '-fill';
-        const lineId  = groupId + '-line';
-        const labelId = groupId + '-label';
+    // ---- Centroide de un polígono (media de vértices del anillo exterior) ----
+    function ringCentroid(ring) {
+        let x = 0, y = 0;
+        for (const [px, py] of ring) { x += px; y += py; }
+        return [x / ring.length, y / ring.length];
+    }
+    function featureCentroid(f) {
+        const g = f.geometry;
+        if (!g) return null;
+        if (g.type === 'Polygon') return ringCentroid(g.coordinates[0]);
+        if (g.type === 'MultiPolygon') {
+            let best = null, bestArea = 0;
+            g.coordinates.forEach(poly => {
+                const r = poly[0];
+                let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+                r.forEach(([px, py]) => { minX = Math.min(minX, px); maxX = Math.max(maxX, px); minY = Math.min(minY, py); maxY = Math.max(maxY, py); });
+                const a = (maxX - minX) * (maxY - minY);
+                if (a > bestArea) { bestArea = a; best = poly; }
+            });
+            return best ? ringCentroid(best[0]) : null;
+        }
+        return null;
+    }
+
+    // ---- Añadir fill + line + label (una etiqueta por feature, en su centroide) ----
+    function addPolygonLayers(groupId, sourceId, defaultFill, lineWidth, label, popupFn, opacity, data) {
+        const fillId    = groupId + '-fill';
+        const lineId    = groupId + '-line';
+        const labelId   = groupId + '-label';
+        const centSrcId = groupId + '-cent';
 
         if (!map.getLayer(fillId)) {
             map.addLayer({ id: fillId, type: 'fill', source: sourceId,
@@ -388,15 +593,29 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
                 paint: { 'line-color': ['coalesce', ['get', 'fill'], defaultFill], 'line-width': lineWidth ?? 1.5 }
             });
         }
-        if (!map.getLayer(labelId)) {
-            map.addLayer({ id: labelId, type: 'symbol', source: sourceId,
-                filter: ['any', ['==', ['geometry-type'], 'Polygon'], ['==', ['geometry-type'], 'MultiPolygon']],
-                layout: { 'text-field': ['get', 'nombre'], 'text-size': 11, 'text-font': [GLYPHS_FONT] },
-                paint: {
-                    'text-color': ['coalesce', ['get', 'fill'], defaultFill],
-                    'text-halo-color': 'rgba(8,14,30,.85)', 'text-halo-width': 1.5
-                }
+
+        // Fuente de puntos centroide → garantiza exactamente una etiqueta por polígono
+        if (data && !map.getSource(centSrcId)) {
+            const pts = [];
+            data.features.forEach(f => {
+                if (!f.properties?.nombre) return;
+                const c = featureCentroid(f);
+                if (c) pts.push({ type: 'Feature', properties: f.properties, geometry: { type: 'Point', coordinates: c } });
             });
+            map.addSource(centSrcId, { type: 'geojson', data: { type: 'FeatureCollection', features: pts } });
+        }
+
+        const labelSrc = map.getSource(centSrcId) ? centSrcId : sourceId;
+        if (!map.getLayer(labelId)) {
+            const layerDef = {
+                id: labelId, type: 'symbol', source: labelSrc,
+                layout: { 'text-field': ['get', 'nombre'], 'text-size': 11, 'text-font': [GLYPHS_FONT] },
+                paint: { 'text-color': ['coalesce', ['get', 'fill'], defaultFill], 'text-halo-color': 'rgba(8,14,30,.85)', 'text-halo-width': 1.5 }
+            };
+            if (labelSrc !== centSrcId) {
+                layerDef.filter = ['any', ['==', ['geometry-type'], 'Polygon'], ['==', ['geometry-type'], 'MultiPolygon']];
+            }
+            map.addLayer(layerDef);
         }
 
         fillLayerIds.push(fillId);
@@ -418,7 +637,8 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
                     if (f.geometry.type !== 'Point') return;
                     const p = f.properties ?? {};
                     const [lng, lt] = f.geometry.coordinates;
-                    const el = vorElement(p.identifier ?? '?');
+                    const desc = (p.descripcion && typeof p.descripcion === 'object') ? p.descripcion : {};
+                    const el = vorElement(desc.identificador ?? p.nombre ?? '?');
                     const marker = new mapboxgl.Marker({ element: el, anchor: 'top' }).setLngLat([lng, lt]).addTo(map);
                     const m = { marker, popupHTML: vorPopup(p), layerLabel, layerColor: '#22d3ee', groupId };
                     markerObjects.push(m);
@@ -442,7 +662,7 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
 
         } else if (name === 'ler') {
             addSource(groupId, data);
-            addPolygonLayers(groupId, groupId, '#4a9eda', 2, layerLabel, lerPopup, 0.25);
+            addPolygonLayers(groupId, groupId, '#4a9eda', 2, layerLabel, lerPopup, 0.25, data);
 
         } else if (name.toLowerCase() === 'varios') {
             if (!markersAdded) {
@@ -476,7 +696,8 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
                     if (f.geometry.type !== 'Point') return;
                     const p = f.properties ?? {};
                     const [lng, lt] = f.geometry.coordinates;
-                    const el = airportElement(p.icao ?? p.nombre ?? '?');
+                    const adesc = (p.descripcion && typeof p.descripcion === 'object') ? p.descripcion : {};
+                    const el = airportElement(adesc.icao ?? p.nombre ?? '?');
                     const marker = new mapboxgl.Marker({ element: el, anchor: 'top' }).setLngLat([lng, lt]).addTo(map);
                     const m = { marker, popupHTML: airportPopup(p), layerLabel, layerColor: '#60a5fa', groupId };
                     markerObjects.push(m);
@@ -485,19 +706,45 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
             }
 
         } else {
-            // Genérico: nombre, descripcion, fill
-            addSource(groupId, data);
-            addPolygonLayers(groupId, groupId, '#e67e22', 1.5, layerLabel, p => simplePopup(p.nombre, p.descripcion), 0.2);
-            // Líneas genéricas
-            if (data.features.some(f => f.geometry.type === 'LineString')) {
-                const lineId = groupId + '-generic-lines';
-                if (!map.getLayer(lineId)) {
-                    map.addLayer({ id: lineId, type: 'line', source: groupId,
-                        filter: ['==', ['geometry-type'], 'LineString'],
-                        paint: { 'line-color': ['coalesce', ['get', 'fill'], '#e67e22'], 'line-width': 1.5 }
-                    });
+            // Puntos genéricos → marcadores con variosElement
+            if (!markersAdded) {
+                data.features.filter(f => f.geometry?.type === 'Point').forEach(f => {
+                    const p = f.properties ?? {};
+                    const [lng, lt] = f.geometry.coordinates;
+                    const desc = (p.descripcion && typeof p.descripcion === 'object') ? p.descripcion : {};
+                    const isAirport = p.icon === 'airport';
+                    const airportLabel = p.tipo === 'ULM' ? (p.nombre ?? '?') : (desc.icao ?? p.nombre ?? '?');
+                    const el = isAirport
+                        ? airportElement(airportLabel)
+                        : variosElement(p.icon ?? '', p.fill, p.nombre ?? '?');
+                    const color = p.fill || '#22c55e';
+                    const marker = new mapboxgl.Marker({ element: el, anchor: 'top' }).setLngLat([lng, lt]).addTo(map);
+                    const popupHTML = isAirport ? airportPopup(p) : simplePopup(p.nombre, p.descripcion);
+                    const m = { marker, popupHTML, layerLabel, layerColor: color, groupId };
+                    markerObjects.push(m);
+                    layerGroups[groupId].markers.push(m);
+                });
+            }
+            // Polígonos y líneas genéricas
+            const hasPolyOrLine = data.features.some(f => {
+                const t = f.geometry?.type;
+                return t === 'Polygon' || t === 'MultiPolygon' || t === 'LineString';
+            });
+            if (hasPolyOrLine) {
+                addSource(groupId, data);
+                if (data.features.some(f => { const t = f.geometry?.type; return t === 'Polygon' || t === 'MultiPolygon'; })) {
+                    addPolygonLayers(groupId, groupId, '#e67e22', 1.5, layerLabel, p => simplePopup(p.nombre, p.descripcion), 0.2, data);
                 }
-                layerGroups[groupId].ids.push(lineId);
+                if (data.features.some(f => f.geometry?.type === 'LineString')) {
+                    const lineId = groupId + '-generic-lines';
+                    if (!map.getLayer(lineId)) {
+                        map.addLayer({ id: lineId, type: 'line', source: groupId,
+                            filter: ['==', ['geometry-type'], 'LineString'],
+                            paint: { 'line-color': ['coalesce', ['get', 'fill'], '#e67e22'], 'line-width': 1.5 }
+                        });
+                    }
+                    layerGroups[groupId].ids.push(lineId);
+                }
             }
         }
     }
@@ -703,9 +950,13 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
         });
         if (visibleFillIds.length > 0) {
             const features = map.queryRenderedFeatures(e.point, { layers: visibleFillIds });
+            const seenKeys = new Set();
             features.forEach(f => {
                 const meta = layerPopupMeta[f.layer.id];
                 if (!meta) return;
+                const key = f.layer.id + '::' + (f.properties.nombre ?? '');
+                if (seenKeys.has(key)) return;
+                seenKeys.add(key);
                 const color = (meta.colorProp && f.properties[meta.colorProp]) || meta.defaultColor || '#aaa';
                 hits.push({ html: meta.popupFn(f.properties), label: meta.label, color });
             });
@@ -766,6 +1017,31 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
                 panel.appendChild(lbl);
             });
         }
+
+        // ── Sección aeronaves ──
+        const acTitle = document.createElement('div');
+        acTitle.className = 'lp-title';
+        acTitle.style.marginTop = '10px';
+        acTitle.textContent = 'Aeronaves';
+        panel.appendChild(acTitle);
+
+        [
+            ['Aviones', true,
+                checked => { acVisible = checked; Object.values(acMkrs).forEach(({ el }) => { el.style.display = checked ? '' : 'none'; }); }
+            ],
+            ['Tracks', true,
+                checked => { acTrailsVisible = checked; if (map.getLayer('ac-trails-layer')) map.setLayoutProperty('ac-trails-layer', 'visibility', checked ? 'visible' : 'none'); }
+            ],
+        ].forEach(([label, initial, onChange]) => {
+            const lbl = document.createElement('label');
+            lbl.className = 'lp-row';
+            const cb = document.createElement('input');
+            cb.type = 'checkbox'; cb.checked = initial;
+            cb.addEventListener('change', () => onChange(cb.checked));
+            lbl.appendChild(cb);
+            lbl.appendChild(document.createTextNode(' ' + label));
+            panel.appendChild(lbl);
+        });
     }
 
     // ---- Marcador de posición (config) ----
@@ -788,6 +1064,205 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
         const f = map.queryRenderedFeatures(e.point, { layers: fillLayerIds });
         map.getCanvas().style.cursor = f.length > 0 ? 'pointer' : '';
     });
+
+    // ── Aeronaves (SBS stream via sse.php) ───────────────────────────────────
+
+    const AC          = {};
+    const acMkrs      = {};   // hex → { marker: mapboxgl.Marker, el: HTMLElement }
+    const acTrailPts  = {};   // hex → { points: [[lng,lat],...], color: string }
+    const EMERGENCY_SQ = new Set(['7500', '7600', '7700']);
+    let acVisible      = true;
+    let acTrailsVisible = true;
+
+    function altColor(alt) {
+        if (alt == null)  return '#60a5fa';
+        if (alt > 35000)  return '#f472b6';
+        if (alt > 25000)  return '#a78bfa';
+        if (alt > 15000)  return '#60a5fa';
+        if (alt >  5000)  return '#34d399';
+        return '#fbbf24';
+    }
+
+    function makeAcEl(track, alt, ground, squawk) {
+        const deg   = track ?? 0;
+        const emerg = squawk && EMERGENCY_SQ.has(squawk);
+        const color = emerg ? '#ef4444' : ground ? '#94a3b8' : altColor(alt);
+        const el = document.createElement('div');
+        el.style.cssText = 'cursor:pointer;width:22px;height:22px';
+        el.innerHTML = `<div class="${emerg ? 'ac-emergency-pulse' : ''}" style="width:22px;height:22px;transform:rotate(${deg}deg)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22">
+                <polygon points="11,1 15.5,20 11,15.5 6.5,20" fill="${color}" stroke="#111" stroke-width="1" stroke-linejoin="round"/>
+            </svg>
+        </div>`;
+        return el;
+    }
+
+    function updateAcEl(el, track, alt, ground, squawk) {
+        const inner = el.firstElementChild;
+        if (!inner) return;
+        const emerg = squawk && EMERGENCY_SQ.has(squawk);
+        const color = emerg ? '#ef4444' : ground ? '#94a3b8' : altColor(alt);
+        inner.style.transform = `rotate(${track ?? 0}deg)`;
+        inner.className = emerg ? 'ac-emergency-pulse' : '';
+        const poly = inner.querySelector('polygon');
+        if (poly) poly.setAttribute('fill', color);
+    }
+
+    function acPopupHtml(a) {
+        const altStr = a.alt   != null ? a.alt.toLocaleString('es-ES') + ' ft' : '—';
+        const spdStr = a.speed != null ? a.speed + ' kt' : '—';
+        const hdgStr = a.track != null ? Math.round(a.track) + '°' : '—';
+        const vrStr  = a.vrate != null ? (a.vrate >= 0 ? '+' : '') + a.vrate + ' ft/min' : '';
+        const squawk = a.squawk ? ' · ' + a.squawk : '';
+        return `<div style="font-size:12px;line-height:1.7;min-width:140px">
+            <div style="font-size:14px;font-weight:700;margin-bottom:2px">${a.callsign || a.hex}</div>
+            <div style="color:#94a3b8;font-size:11px;margin-bottom:6px">${a.hex}${squawk}</div>
+            <div>↕ ${altStr}</div>
+            <div>→ ${spdStr} &nbsp;⬆ ${hdgStr}</div>
+            ${vrStr ? '<div>' + vrStr + '</div>' : ''}
+            ${a.ground ? '<div style="color:#fbbf24">En tierra</div>' : ''}
+        </div>`;
+    }
+
+    function parseSBS(line) {
+        const f = line.split(',');
+        if (f[0] !== 'MSG' || f.length < 11) return;
+        const hex  = f[4];
+        const type = parseInt(f[1]);
+        if (!hex) return;
+        if (!AC[hex]) AC[hex] = { hex, callsign:null, alt:null, speed:null, track:null, lat:null, lon:null, vrate:null, squawk:null, ground:false, lastSeen:0 };
+        const a = AC[hex];
+        a.lastSeen = Date.now();
+        if (type === 1 && f[10] && f[10].trim()) a.callsign = f[10].trim();
+        if (type === 2 || type === 3) {
+            if (f[11]) a.alt = parseInt(f[11]);
+            if (f[14]) a.lat = parseFloat(f[14]);
+            if (f[15]) a.lon = parseFloat(f[15]);
+            if (f[21] === '1') a.ground = true;
+            if (f[21] === '0') a.ground = false;
+        }
+        if (type === 4) {
+            if (f[12]) a.speed = parseInt(f[12]);
+            if (f[13]) a.track = parseFloat(f[13]);
+            if (f[16]) a.vrate = parseInt(f[16]);
+        }
+        if (type === 5 && f[11]) a.alt = parseInt(f[11]);
+        if (type === 6) {
+            if (f[11]) a.alt    = parseInt(f[11]);
+            if (f[17]) a.squawk = f[17];
+        }
+    }
+
+    function distMeters(lat1, lon1, lat2, lon2) {
+        const dlat = (lat2 - lat1) * 111320;
+        const dlon = (lon2 - lon1) * 111320 * Math.cos(lat1 * 0.01745329);
+        return Math.sqrt(dlat * dlat + dlon * dlon);
+    }
+
+    function updateFollowBtn() {
+        if (!followBtnEl) return;
+        const active = followSelected && !!selectedHex;
+        followBtnEl.style.color = active ? '#60a5fa' : '';
+        followBtnEl.title = active
+            ? 'Dejar de seguir ' + (AC[selectedHex]?.callsign || selectedHex || 'avión')
+            : 'Seguir avión seleccionado (pulsa primero en un avión)';
+    }
+
+    function updateTrailsLockBtn() {
+        if (!trailsBtnEl) return;
+        trailsBtnEl.style.color = tracksLocked ? '#f59e0b' : '';
+        trailsBtnEl.title = tracksLocked ? 'Desactivar retención de tracks' : 'Retener todos los tracks';
+    }
+
+    function ensureTrailsSource() {
+        if (!map.isStyleLoaded()) return false;
+        if (!map.getSource('ac-trails')) {
+            map.addSource('ac-trails', { type: 'geojson', data: { type: 'FeatureCollection', features: [] } });
+        }
+        if (!map.getLayer('ac-trails-layer')) {
+            map.addLayer({
+                id: 'ac-trails-layer', type: 'line', source: 'ac-trails',
+                layout: { 'line-join': 'round', 'line-cap': 'round' },
+                paint: { 'line-color': ['get', 'color'], 'line-width': 1.8, 'line-opacity': 0.55 }
+            });
+            if (!acTrailsVisible) map.setLayoutProperty('ac-trails-layer', 'visibility', 'none');
+        }
+        return true;
+    }
+
+    function refreshTracking() {
+        const now      = Date.now();
+        const STALE    = 120000;
+        const TRAIL_MAX = 90;
+        const TRAIL_MIN = 120;
+
+        Object.keys(AC).forEach(hex => {
+            if (now - AC[hex].lastSeen > STALE) {
+                if (acMkrs[hex]) { acMkrs[hex].marker.remove(); delete acMkrs[hex]; }
+                if (!tracksLocked) delete acTrailPts[hex];
+                if (hex === selectedHex) { selectedHex = null; followSelected = false; updateFollowBtn(); }
+                delete AC[hex];
+            }
+        });
+
+        Object.values(AC).forEach(a => {
+            if (a.lat == null || a.lon == null) return;
+
+            if (acMkrs[a.hex]) {
+                acMkrs[a.hex].marker.setLngLat([a.lon, a.lat]);
+                updateAcEl(acMkrs[a.hex].el, a.track, a.alt, a.ground, a.squawk);
+                const pop = acMkrs[a.hex].marker.getPopup();
+                if (pop && pop.isOpen()) pop.setHTML(acPopupHtml(a));
+            } else {
+                const el = makeAcEl(a.track, a.alt, a.ground, a.squawk);
+                el.addEventListener('click', () => { selectedHex = a.hex; updateFollowBtn(); });
+                const marker = new mapboxgl.Marker({ element: el, anchor: 'center' })
+                    .setLngLat([a.lon, a.lat])
+                    .setPopup(new mapboxgl.Popup({ maxWidth: '220px', offset: 14 }).setHTML(acPopupHtml(a)))
+                    .addTo(map);
+                if (!acVisible) el.style.display = 'none';
+                acMkrs[a.hex] = { marker, el };
+            }
+
+            if (!acTrailPts[a.hex]) {
+                acTrailPts[a.hex] = { points: [[a.lon, a.lat]], color: altColor(a.alt) };
+            } else {
+                const trail = acTrailPts[a.hex];
+                const last  = trail.points[trail.points.length - 1];
+                if (distMeters(last[1], last[0], a.lat, a.lon) >= TRAIL_MIN) {
+                    trail.points.push([a.lon, a.lat]);
+                    if (trail.points.length > TRAIL_MAX && !tracksLocked) trail.points.shift();
+                }
+                trail.color = altColor(a.alt);
+            }
+        });
+
+        if (followSelected && selectedHex && AC[selectedHex]?.lat != null) {
+            map.easeTo({ center: [AC[selectedHex].lon, AC[selectedHex].lat], duration: 800, animate: true });
+        }
+
+        if (ensureTrailsSource()) {
+            const features = Object.entries(acTrailPts)
+                .filter(([hex]) => (AC[hex] || tracksLocked) && acTrailPts[hex].points.length >= 2)
+                .map(([, trail]) => ({
+                    type: 'Feature',
+                    properties: { color: trail.color },
+                    geometry: { type: 'LineString', coordinates: trail.points }
+                }));
+            map.getSource('ac-trails').setData({ type: 'FeatureCollection', features });
+        }
+    }
+
+    setInterval(refreshTracking, 2000);
+
+    let acEvtSrc = null;
+    function acConnect() {
+        if (acEvtSrc) { acEvtSrc.onmessage = null; acEvtSrc.onerror = null; acEvtSrc.close(); acEvtSrc = null; }
+        acEvtSrc = new EventSource('sse.php');
+        acEvtSrc.onmessage = e => parseSBS(e.data);
+        acEvtSrc.onerror   = () => { if (acEvtSrc.readyState === EventSource.CLOSED) setTimeout(acConnect, 5000); };
+    }
+    acConnect();
 
 })();
 </script>

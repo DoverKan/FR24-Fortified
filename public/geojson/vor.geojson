@@ -5,200 +5,51 @@
       "type": "Feature",
       "properties": {
         "tipo": "VOR",
-        "nombre": "VOR/DME Cáceres",
+        "nombre": "VOR/DME Madrid Barajas",
         "descripcion": {
-          "identificador": "CCS",
-          "frecuencia": "114.10"
+          "identificador": "BRA",
+          "frecuencia": "116.45"
         },
-        "fill": "#22d3ee",
+        "fill": "#00BCD4",
         "icon": "vor"
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -6.3361,
-          39.4739
-        ]
+        "coordinates": [-3.5626, 40.4719]
       }
     },
     {
       "type": "Feature",
       "properties": {
         "tipo": "VOR",
-        "nombre": "VOR/DME Hinojosa",
+        "nombre": "VOR Getafe",
         "descripcion": {
-          "identificador": "HIJ",
-          "frecuencia": "113.30"
+          "identificador": "VGE",
+          "frecuencia": "112.50"
         },
-        "fill": "#22d3ee",
+        "fill": "#00BCD4",
         "icon": "vor"
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -5.15,
-          38.4667
-        ]
+        "coordinates": [-3.7237, 40.2943]
       }
     },
     {
       "type": "Feature",
       "properties": {
         "tipo": "VOR",
-        "nombre": "VOR/DME Badajoz",
+        "nombre": "VOR/DME Torrejón",
         "descripcion": {
-          "identificador": "VBZ",
-          "frecuencia": "116.80"
+          "identificador": "TOA",
+          "frecuencia": "114.35"
         },
-        "fill": "#22d3ee",
+        "fill": "#00BCD4",
         "icon": "vor"
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -6.815753,
-          38.88988
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "tipo": "VOR",
-        "nombre": "VOR/DME Lisboa",
-        "descripcion": {
-          "identificador": "LIS",
-          "frecuencia": "114.80"
-        },
-        "fill": "#22d3ee",
-        "icon": "vor"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -9.1308,
-          38.7631
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "tipo": "VOR",
-        "nombre": "VOR/DME Cascais",
-        "descripcion": {
-          "identificador": "CAS",
-          "frecuencia": "114.50"
-        },
-        "fill": "#22d3ee",
-        "icon": "vor"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -9.4197,
-          38.7244
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "tipo": "VOR",
-        "nombre": "VOR/DME Sevilla",
-        "descripcion": {
-          "identificador": "SVL",
-          "frecuencia": "114.90"
-        },
-        "fill": "#22d3ee",
-        "icon": "vor"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -5.8797,
-          37.418
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "tipo": "VOR",
-        "nombre": "VOR/DME Toledo",
-        "descripcion": {
-          "identificador": "TLD",
-          "frecuencia": "117.60"
-        },
-        "fill": "#22d3ee",
-        "icon": "vor"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -4.0219,
-          39.8836
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "tipo": "VOR",
-        "nombre": "VOR/DME Salamanca",
-        "descripcion": {
-          "identificador": "BBI",
-          "frecuencia": "112.10"
-        },
-        "fill": "#22d3ee",
-        "icon": "vor"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -5.5019,
-          40.9522
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "tipo": "VOR",
-        "nombre": "VOR/DME Fátima",
-        "descripcion": {
-          "identificador": "FTM",
-          "frecuencia": "113.50"
-        },
-        "fill": "#22d3ee",
-        "icon": "vor"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -8.6333,
-          39.6167
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "tipo": "VOR",
-        "nombre": "VOR/DME Nisa",
-        "descripcion": {
-          "identificador": "NSA",
-          "frecuencia": "115.50"
-        },
-        "fill": "#22d3ee",
-        "icon": "vor"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -7.9144,
-          39.5647
-        ]
+        "coordinates": [-3.4444, 40.4912]
       }
     },
     {
@@ -210,55 +61,114 @@
           "identificador": "VTB",
           "frecuencia": "112.70"
         },
-        "fill": "#22d3ee",
+        "fill": "#00BCD4",
         "icon": "vor"
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -3.7638,
-          39.7805
-        ]
+        "coordinates": [-3.7638, 39.7805]
       }
     },
     {
       "type": "Feature",
       "properties": {
         "tipo": "VOR",
-        "nombre": "VOR/DME Sagrado",
+        "nombre": "VOR/DME Toledo",
         "descripcion": {
-          "identificador": "SGR",
-          "frecuencia": "113.90"
+          "identificador": "TLD",
+          "frecuencia": "117.60"
         },
-        "fill": "#22d3ee",
+        "fill": "#00BCD4",
         "icon": "vor"
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -8.9463,
-          37.0836
-        ]
+        "coordinates": [-4.0219, 39.8836]
       }
     },
     {
       "type": "Feature",
       "properties": {
         "tipo": "VOR",
-        "nombre": "VOR/DME Faro",
+        "nombre": "VOR/DME Grajera",
         "descripcion": {
-          "identificador": "VFA",
-          "frecuencia": "112.80"
+          "identificador": "GJZ",
+          "frecuencia": "115.60"
         },
-        "fill": "#22d3ee",
+        "fill": "#00BCD4",
         "icon": "vor"
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -7.975,
-          37.0133
-        ]
+        "coordinates": [-3.3833, 41.3667]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Cáceres",
+        "descripcion": {
+          "identificador": "CCS",
+          "frecuencia": "114.10"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-6.3361, 39.4739]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Hinojosa",
+        "descripcion": {
+          "identificador": "HIJ",
+          "frecuencia": "113.30"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-5.1500, 38.4667]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Badajoz",
+        "descripcion": {
+          "identificador": "VBZ",
+          "frecuencia": "116.80"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-6.8157, 38.8898]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Sevilla",
+        "descripcion": {
+          "identificador": "SVL",
+          "frecuencia": "114.90"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-5.8797, 37.4180]
       }
     },
     {
@@ -270,15 +180,726 @@
           "identificador": "JRZ",
           "frecuencia": "113.00"
         },
-        "fill": "#22d3ee",
+        "fill": "#00BCD4",
         "icon": "vor"
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -6.0263,
-          36.815
-        ]
+        "coordinates": [-6.0263, 36.8150]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Málaga",
+        "descripcion": {
+          "identificador": "MGA",
+          "frecuencia": "112.00"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-4.4992, 36.6750]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Granada",
+        "descripcion": {
+          "identificador": "GRX",
+          "frecuencia": "114.70"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-3.7773, 37.1887]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Almería",
+        "descripcion": {
+          "identificador": "AMR",
+          "frecuencia": "114.10"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-2.3701, 36.8439]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Barcelona",
+        "descripcion": {
+          "identificador": "BCN",
+          "frecuencia": "116.70"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [2.0785, 41.2971]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Sabadell",
+        "descripcion": {
+          "identificador": "SLL",
+          "frecuencia": "112.00"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [2.1050, 41.5208]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Girona",
+        "descripcion": {
+          "identificador": "CLE",
+          "frecuencia": "112.90"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [2.7605, 41.9009]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Maials",
+        "descripcion": {
+          "identificador": "MSL",
+          "frecuencia": "114.30"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [0.5000, 41.3667]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Valencia",
+        "descripcion": {
+          "identificador": "VLC",
+          "frecuencia": "114.50"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.4816, 39.4893]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Alicante",
+        "descripcion": {
+          "identificador": "ALT",
+          "frecuencia": "113.80"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.5581, 38.2821]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Castellón",
+        "descripcion": {
+          "identificador": "CTL",
+          "frecuencia": "113.40"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [0.0733, 40.2138]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Zaragoza",
+        "descripcion": {
+          "identificador": "ZGZ",
+          "frecuencia": "114.20"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-3.0450, 41.6662]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Calamocha",
+        "descripcion": {
+          "identificador": "CLS",
+          "frecuencia": "112.20"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-1.3000, 40.9167]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Castejón",
+        "descripcion": {
+          "identificador": "CJN",
+          "frecuencia": "113.10"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-1.6833, 42.1667]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Pamplona",
+        "descripcion": {
+          "identificador": "PPN",
+          "frecuencia": "112.30"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-1.6463, 42.7700]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Bilbao",
+        "descripcion": {
+          "identificador": "BLV",
+          "frecuencia": "115.90"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-2.9100, 43.3000]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Santander",
+        "descripcion": {
+          "identificador": "SNR",
+          "frecuencia": "115.30"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-3.8200, 43.4270]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Asturias",
+        "descripcion": {
+          "identificador": "VES",
+          "frecuencia": "112.40"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-6.0346, 43.5635]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME La Coruña",
+        "descripcion": {
+          "identificador": "LRA",
+          "frecuencia": "115.10"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-8.3772, 43.3021]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Santiago",
+        "descripcion": {
+          "identificador": "STG",
+          "frecuencia": "116.40"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-8.4151, 42.8963]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Vigo",
+        "descripcion": {
+          "identificador": "VGO",
+          "frecuencia": "113.60"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-8.6268, 42.2318]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME León",
+        "descripcion": {
+          "identificador": "EON",
+          "frecuencia": "112.00"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-5.6556, 42.5890]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Salamanca",
+        "descripcion": {
+          "identificador": "BBI",
+          "frecuencia": "112.10"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-5.5019, 40.9522]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Zamora",
+        "descripcion": {
+          "identificador": "ZMR",
+          "frecuencia": "117.10"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-5.7400, 41.5100]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Palma de Mallorca",
+        "descripcion": {
+          "identificador": "MJV",
+          "frecuencia": "113.30"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [2.7300, 39.5500]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Menorca",
+        "descripcion": {
+          "identificador": "MAO",
+          "frecuencia": "116.20"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [4.2186, 39.8625]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Ibiza",
+        "descripcion": {
+          "identificador": "IBA",
+          "frecuencia": "117.80"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [1.3700, 38.8700]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Gran Canaria",
+        "descripcion": {
+          "identificador": "LPA",
+          "frecuencia": "113.10"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-15.3865, 27.9319]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Tenerife Sur",
+        "descripcion": {
+          "identificador": "TFS",
+          "frecuencia": "114.90"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-16.5724, 28.0444]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Tenerife Norte",
+        "descripcion": {
+          "identificador": "TFN",
+          "frecuencia": "112.50"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-16.3415, 28.4826]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Fuerteventura",
+        "descripcion": {
+          "identificador": "FTV",
+          "frecuencia": "112.40"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-13.8637, 28.4527]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Lanzarote",
+        "descripcion": {
+          "identificador": "LTE",
+          "frecuencia": "112.90"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-13.6052, 28.8774]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Lisboa",
+        "descripcion": {
+          "identificador": "LIS",
+          "frecuencia": "114.80"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-9.1308, 38.7631]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Cascais",
+        "descripcion": {
+          "identificador": "CAS",
+          "frecuencia": "114.50"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-9.4197, 38.7244]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VORTAC",
+        "nombre": "VORTAC Espichel",
+        "descripcion": {
+          "identificador": "ESP",
+          "frecuencia": "112.50"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-9.2100, 38.4100]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Fátima",
+        "descripcion": {
+          "identificador": "FTM",
+          "frecuencia": "113.50"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-8.6333, 39.6167]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Porto",
+        "descripcion": {
+          "identificador": "PRT",
+          "frecuencia": "114.10"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-8.6814, 41.2481]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Faro",
+        "descripcion": {
+          "identificador": "VFA",
+          "frecuencia": "112.80"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-7.9750, 37.0133]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VORTAC",
+        "nombre": "VORTAC Nisa",
+        "descripcion": {
+          "identificador": "NSA",
+          "frecuencia": "115.50"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-7.9144, 39.5647]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Viseu",
+        "descripcion": {
+          "identificador": "VIS",
+          "frecuencia": "113.10"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-7.8886, 40.7258]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Sagrado",
+        "descripcion": {
+          "identificador": "SGR",
+          "frecuencia": "113.90"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-8.9463, 37.0836]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VORTAC",
+        "nombre": "VORTAC Beja",
+        "descripcion": {
+          "identificador": "BEJ",
+          "frecuencia": "115.80"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-7.9300, 38.0700]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "VOR",
+        "nombre": "VOR/DME Monte Real",
+        "descripcion": {
+          "identificador": "MRL",
+          "frecuencia": "112.70"
+        },
+        "fill": "#00BCD4",
+        "icon": "vor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-8.8700, 39.8300]
       }
     }
   ]

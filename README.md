@@ -9,7 +9,9 @@ Panel de monitoreo web para receptores ADS-B de FlightRadar24 (Feeder y Box). Mu
 ## Características
 
 - **Dashboard en tiempo real** — estado del receptor, estadísticas y tabla de vuelos activos con auto-refresco
-- **Mapa interactivo** — visualización de posiciones de aeronaves sobre Mapbox GL con capas GeoJSON (espacio aéreo, aeropuertos, etc.)
+- **Mapa interactivo** — visualización sobre Mapbox GL con capas GeoJSON configurables (espacio aéreo, aeropuertos, VOR/DME, helipuertos, hospitales, nodos Meshtastic, etc.)
+- **Seguimiento de aeronaves** — posiciones, rumbo, altitud y tracks históricos en tiempo real vía stream SBS (puerto 30003); iconos con código de colores por altitud y alerta de squawk de emergencia
+- **Controles del mapa** — centrar en todos los aviones, seguir un avión seleccionado, retener tracks ilimitados, exportar el mapa como PNG
 - **Consola SBS** — stream en tiempo real del protocolo SBS/AVR (puerto 30003) vía Server-Sent Events
 - **Soporte dual** — compatible con receptores tipo `feeder` y tipo `box`
 - **Versión standalone** — archivo único `fr24-standalone.php` para despliegue sin configuración adicional
@@ -172,7 +174,7 @@ FR24/
 │   ├── fr24-standalone.php     # Versión autónoma en un solo archivo
 │   ├── partials/               # Componentes reutilizables (sidebar, topbar)
 │   ├── css/                    # Hojas de estilo
-│   └── geojson/                # Capas GeoJSON (aeropuertos, sectores, etc.)
+│   └── geojson/                # Capas GeoJSON (LER, CTR, sectores, aeropuertos, VOR/DME, helipuertos, hospitales, Meshtastic, etc.)
 │
 └── docs/                       # Documentación adicional
 ```

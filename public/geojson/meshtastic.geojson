@@ -1,0 +1,89 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "BA03ZafraSuarezGW",
+        "fill": "#1565C0",
+        "descripcion": {
+            "Hardware": "NRF52_PROMICRO_DIY",
+            "Rol": "ROUTER",
+            "Visto": "hace 1h"
+        },
+        "icon": "meshtastic",
+        "tipo": "Meshtastic"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.4422,
+          38.4106
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "ZafraSuarez Base",
+        "fill": "#1565C0",
+        "descripcion": {
+            "Hardware": "SEEED_XIAO_S3",
+            "Rol": "CLIENT",
+            "Visto": "hace 1h"
+        },
+        "icon": "meshtastic",
+        "tipo": "Meshtastic"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.4160,
+          38.4238
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "ZafraSuarez Tracker Quique",
+        "fill": "#1565C0",
+        "descripcion": {
+            "Hardware": "TRACKER_T1000_E",
+            "Rol": "CLIENT_MUTE",
+            "Visto": "hace 22 min"
+        },
+        "icon": "meshtastic",
+        "tipo": "Meshtastic"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.4225,
+          38.4041
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "v1ct0r.dev Trak",
+        "fill": "#1565C0",
+        "descripcion": {
+            "Hardware": "SEEED_WIO_TRACKER_L1",
+            "Rol": "TRACKER",
+            "Visto": "hace 144h"
+        },
+        "icon": "meshtastic",
+        "tipo": "Meshtastic"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.4225,
+          38.4042
+        ]
+      }
+    }
+  ]
+}

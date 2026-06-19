@@ -6,57 +6,6 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -7.002338,
-          38.8833621
-        ]
-      },
-      "properties": {
-        "nombre": "LEBN",
-        "descripcion": "Helipuerto Hospital Universitario de Badajoz",
-        "tipo": "Helipuerto",
-        "icon": "helipad",
-        "fill": "#f87171"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -6.978354,
-          38.8769575
-        ]
-      },
-      "properties": {
-        "nombre": "CNP",
-        "descripcion": "Helipuerto Policia Nacional",
-        "tipo": "Helipuerto",
-        "icon": "helipad",
-        "fill": "#f87171"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -6.896812,
-          39.022819
-        ]
-      },
-      "properties": {
-        "nombre": "CMB",
-        "descripcion": "Helipuerto Cuartel de Menacho Botoa",
-        "tipo": "Helipuerto",
-        "icon": "helipad",
-        "fill": "#f87171"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
           -6.957353,
           38.871231
         ]
@@ -66,7 +15,7 @@
         "descripcion": "Alberto AMB99",
         "tipo": "Antena",
         "icon": "antena",
-        "fill": "#a78bfa"
+        "fill": "#7C3AED"
       }
     },
     {
@@ -83,7 +32,7 @@
         "descripcion": "Panchuli",
         "tipo": "Antena",
         "icon": "antena",
-        "fill": "#a78bfa"
+        "fill": "#7C3AED"
       }
     },
     {
@@ -100,7 +49,7 @@
         "descripcion": "Manyula",
         "tipo": "Antena",
         "icon": "antena",
-        "fill": "#a78bfa"
+        "fill": "#7C3AED"
       }
     },
     {
@@ -117,7 +66,7 @@
         "descripcion": "Verde",
         "tipo": "Antena",
         "icon": "antena",
-        "fill": "#a78bfa"
+        "fill": "#7C3AED"
       }
     },
     {
@@ -133,8 +82,8 @@
         "nombre": "M10 31",
         "descripcion": "Milla 10 31",
         "tipo": "M",
-        "icon": "vp",
-        "fill": "#fbbf24"
+        "icon": "m",
+        "fill": "#FFC107"
       }
     },
     {
@@ -150,8 +99,8 @@
         "nombre": "M10 13",
         "descripcion": "Milla 10 13",
         "tipo": "M",
-        "icon": "vp",
-        "fill": "#fbbf24"
+        "icon": "m",
+        "fill": "#FFC107"
       }
     },
     {
@@ -160,8 +109,8 @@
         "nombre": "a",
         "descripcion": "a",
         "tipo": "LINEA",
-        "icon": "a",
-        "fill": "a"
+        "icon": "",
+        "fill": "#90A4AE"
       },
       "geometry": {
         "type": "LineString",
@@ -183,8 +132,8 @@
         "nombre": "a",
         "descripcion": "a",
         "tipo": "LINEA",
-        "icon": "a",
-        "fill": "a"
+        "icon": "",
+        "fill": "#90A4AE"
       },
       "geometry": {
         "type": "LineString",

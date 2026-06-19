@@ -4,121 +4,1429 @@
     {
       "type": "Feature",
       "properties": {
-        "nombre": "Badajoz",
-        "fill": "#FF5733",
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto de A Coruña",
+        "descripcion": {
+          "icao": "LECO",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-8.3772, 43.3021]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto de Albacete",
+        "descripcion": {
+          "icao": "LEAB",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-1.8635, 38.9485]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto de Alicante-Elche Miguel Hernández",
+        "descripcion": {
+          "icao": "LEAL",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.5581, 38.2821]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto de Almería",
+        "descripcion": {
+          "icao": "LEAM",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-2.3701, 36.8439]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto de Andorra-La Seu",
+        "descripcion": {
+          "icao": "LESU",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [1.4091, 42.3386]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto de Asturias",
+        "descripcion": {
+          "icao": "LEAS",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-6.0346, 43.5635]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto de Badajoz/Talavera La Real",
         "descripcion": {
           "icao": "LEBZ",
           "notas": ""
         },
-        "icon": "airport",
-        "tipo": "Aeropuerto"
+        "fill": "#FFA726",
+        "icon": "airport"
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -6.8224393,
-          38.8919176
-        ]
+        "coordinates": [-6.8213, 38.8912]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "fill": "#33FF57",
-        "nombre": "Beja",
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto Josep Tarradellas Barcelona-El Prat",
+        "descripcion": {
+          "icao": "LEBL",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [2.0783, 41.2970]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto de Bilbao",
+        "descripcion": {
+          "icao": "LEBB",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-2.9106, 43.3011]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto de Burgos/Villafría",
+        "descripcion": {
+          "icao": "LEBG",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-3.6208, 42.3576]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Base Naval de Rota",
+        "descripcion": {
+          "icao": "LERT",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-6.3495, 36.6452]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto de Castellón",
+        "descripcion": {
+          "icao": "LECH",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [0.0733, 40.2138]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto de Ciudad Real",
+        "descripcion": {
+          "icao": "LERL",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-3.9700, 38.8564]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto de Córdoba",
+        "descripcion": {
+          "icao": "LEBA",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-4.8489, 37.8420]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto de El Hierro",
+        "descripcion": {
+          "icao": "GCHI",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-17.8860, 27.8146]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto de Fuerteventura",
+        "descripcion": {
+          "icao": "GCFV",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-13.8637, 28.4527]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto de Girona-Costa Brava",
+        "descripcion": {
+          "icao": "LEGE",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [2.7605, 41.9009]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto de Gran Canaria",
+        "descripcion": {
+          "icao": "GCLP",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-15.3865, 27.9319]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Base Aérea de Armilla",
+        "descripcion": {
+          "icao": "LEGA",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-3.6350, 37.1380]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto F.G.L. Granada-Jaén",
+        "descripcion": {
+          "icao": "LEGR",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-3.7773, 37.1887]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto de Huesca-Pirineos",
+        "descripcion": {
+          "icao": "LEHC",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.3235, 42.0805]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto de Ibiza",
+        "descripcion": {
+          "icao": "LEIB",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [1.3731, 38.8729]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto de Jerez",
+        "descripcion": {
+          "icao": "LEJR",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-6.0263, 36.8150]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto de La Gomera",
+        "descripcion": {
+          "icao": "GCGM",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-17.2146, 28.0296]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto de La Palma",
+        "descripcion": {
+          "icao": "GCLA",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-17.7556, 28.6264]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto César Manrique-Lanzarote",
+        "descripcion": {
+          "icao": "GCRR",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-13.6052, 28.8774]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto de León",
+        "descripcion": {
+          "icao": "LELN",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-5.6556, 42.5890]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto de Lleida-Alguaire",
+        "descripcion": {
+          "icao": "LEDA",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [0.5372, 41.7278]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto de Logroño-Agoncillo",
+        "descripcion": {
+          "icao": "LERJ",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-2.3200, 42.4608]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto Adolfo Suárez Madrid-Barajas",
+        "descripcion": {
+          "icao": "LEMD",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-3.5677, 40.4719]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeródromo",
+        "nombre": "Aeródromo de Madrid-Cuatro Vientos",
+        "descripcion": {
+          "icao": "LECU",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-3.7851, 40.3706]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Base Aérea",
+        "nombre": "Base Aérea de Getafe",
+        "descripcion": {
+          "icao": "LEGT",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-3.7238, 40.2941]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Base Aérea",
+        "nombre": "Base Aérea de Torrejón",
+        "descripcion": {
+          "icao": "LETO",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-3.4444, 40.4912]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto de Málaga-Costa del Sol",
+        "descripcion": {
+          "icao": "LEMG",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-4.4991, 36.6749]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeródromo",
+        "nombre": "Aeródromo de Pollensa",
+        "descripcion": {
+          "icao": "LEPO",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [3.1028, 39.9144]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeródromo",
+        "nombre": "Aeródromo de Son Bonet",
+        "descripcion": {
+          "icao": "LESB",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [2.7028, 39.5989]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto de Melilla",
+        "descripcion": {
+          "icao": "GEML",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-2.9562, 35.2798]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto de Menorca",
+        "descripcion": {
+          "icao": "LEMH",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [4.2186, 39.8625]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto Internacional Región de Murcia",
+        "descripcion": {
+          "icao": "LEMI",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-1.1246, 37.8030]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Base Aérea",
+        "nombre": "Base Aérea de Alcantarilla",
+        "descripcion": {
+          "icao": "LERI",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-1.2306, 37.9511]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto de Murcia-San Javier",
+        "descripcion": {
+          "icao": "LELC",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.8122, 37.7750]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto de Palma de Mallorca",
+        "descripcion": {
+          "icao": "LEPA",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [2.7388, 39.5516]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto de Pamplona",
+        "descripcion": {
+          "icao": "LEPP",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-1.6463, 42.7700]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto de Reus",
+        "descripcion": {
+          "icao": "LERS",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [1.1672, 41.1474]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeródromo",
+        "nombre": "Aeródromo de Sabadell",
+        "descripcion": {
+          "icao": "LELL",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [2.1050, 41.5208]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto de Salamanca/Matacán",
+        "descripcion": {
+          "icao": "LESA",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-5.5019, 40.9522]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto de San Sebastián",
+        "descripcion": {
+          "icao": "LESO",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-1.7906, 43.3565]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto Seve Ballesteros-Santander",
+        "descripcion": {
+          "icao": "LEXJ",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-3.8200, 43.4270]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto de Santiago-Rosalía de Castro",
+        "descripcion": {
+          "icao": "LEST",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-8.4151, 42.8963]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto de Sevilla",
+        "descripcion": {
+          "icao": "LEZL",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-5.8931, 37.4180]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Base Aérea",
+        "nombre": "Base Aérea de Morón",
+        "descripcion": {
+          "icao": "LEMO",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-5.6158, 37.1747]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto de Tenerife Norte-Ciudad de La Laguna",
+        "descripcion": {
+          "icao": "GCXO",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-16.3415, 28.4826]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto de Tenerife Sur",
+        "descripcion": {
+          "icao": "GCTS",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-16.5724, 28.0444]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto de Teruel",
+        "descripcion": {
+          "icao": "LETL",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-1.2183, 40.4128]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto de Valencia",
+        "descripcion": {
+          "icao": "LEVC",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.4816, 39.4893]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto de Valladolid/Villanubla",
+        "descripcion": {
+          "icao": "LEVD",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-4.8519, 41.7061]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto de Vigo",
+        "descripcion": {
+          "icao": "LEVX",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-8.6268, 42.2318]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto de Vitoria",
+        "descripcion": {
+          "icao": "LEVT",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-2.7244, 42.8828]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeropuerto de Zaragoza",
+        "descripcion": {
+          "icao": "LEZG",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-3.0450, 41.6662]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Helipuerto",
+        "nombre": "Helipuerto de Ceuta",
+        "descripcion": {
+          "icao": "GECE",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-5.3094, 35.8922]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeródromo",
+        "nombre": "Aeródromo de Mutxamel",
+        "descripcion": {
+          "icao": "LERV",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.4735, 38.4357]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeródromo",
+        "nombre": "Aeródromo de La Cerdanya",
+        "descripcion": {
+          "icao": "LECD",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [1.8666, 42.3866]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeroporto Humberto Delgado (Lisboa)",
+        "descripcion": {
+          "icao": "LPPT",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-9.1359, 38.7741]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeroporto Francisco Sá Carneiro (Porto)",
+        "descripcion": {
+          "icao": "LPPR",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-8.6814, 41.2481]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeroporto de Faro",
+        "descripcion": {
+          "icao": "LPFR",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-7.9659, 37.0144]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeroporto Cristiano Ronaldo (Funchal)",
+        "descripcion": {
+          "icao": "LPMA",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-16.7744, 32.6978]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeroporto de Porto Santo",
+        "descripcion": {
+          "icao": "LPPS",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-16.3500, 33.0722]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeroporto João Paulo II (Ponta Delgada)",
+        "descripcion": {
+          "icao": "LPPD",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-25.6979, 37.7412]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeroporto das Lajes (Terceira)",
+        "descripcion": {
+          "icao": "LPLA",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-27.0908, 38.7618]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeroporto da Horta (Faial)",
+        "descripcion": {
+          "icao": "LPHR",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-28.7150, 38.5199]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeroporto de Santa Maria",
+        "descripcion": {
+          "icao": "LPAZ",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-25.1706, 36.9713]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeroporto do Corvo",
+        "descripcion": {
+          "icao": "LPCR",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-31.1136, 39.6713]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeroporto das Flores",
+        "descripcion": {
+          "icao": "LPFL",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-31.1314, 39.4553]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeroporto da Graciosa",
+        "descripcion": {
+          "icao": "LPGR",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-28.0297, 39.0924]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeroporto do Pico",
+        "descripcion": {
+          "icao": "LPPI",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-28.4406, 38.5541]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeroporto de São Jorge",
+        "descripcion": {
+          "icao": "LPSJ",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-28.1750, 38.6653]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeropuerto",
+        "nombre": "Aeroporto de Beja",
         "descripcion": {
           "icao": "LPBJ",
           "notas": ""
         },
-        "icon": "airport",
-        "tipo": "Aeropuerto"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -7.9324806,
-          38.0788183
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "nombre": "El Manantio",
-        "fill": "#3357FF",
-        "descripcion": {
-          "icao": "LEEM",
-          "notas": ""
-        },
-        "tipo": "Aeropuerto",
+        "fill": "#FFA726",
         "icon": "airport"
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -6.9911264,
-          38.7775416
-        ]
+        "coordinates": [-7.9316, 38.0789]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "nombre": "Patiño",
-        "fill": "#FFC300",
+        "tipo": "Aeródromo",
+        "nombre": "Aeródromo Municipal de Cascais",
         "descripcion": {
-          "icao": "LEPN",
+          "icao": "LPCS",
           "notas": ""
         },
-        "icon": "airport",
-        "tipo": "Aeropuerto"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -7.0000437,
-          38.7053626
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "nombre": "El Potosí",
-        "descripcion": {
-          "icao": "ZZZZ",
-          "notas": ""
-        },
-        "fill": "#DAF7A6",
-        "tipo": "Aeropuerto",
+        "fill": "#FFA726",
         "icon": "airport"
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -6.8376859,
-          38.8552125
-        ]
+        "coordinates": [-9.3553, 38.7255]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "fill": "#900C3F",
+        "tipo": "Aeródromo",
+        "nombre": "Aeródromo de Viseu",
         "descripcion": {
-          "icao": "LETE",
+          "icao": "LPVJ",
           "notas": ""
         },
-        "nombre": "Morante",
-        "tipo": "Aeropuerto",
+        "fill": "#FFA726",
         "icon": "airport"
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          -6.6906455,
-          39.0368878
-        ]
+        "coordinates": [-7.8886, 40.7258]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeródromo",
+        "nombre": "Aeródromo de Évora",
+        "descripcion": {
+          "icao": "LPEV",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-7.8883, 38.5333]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeródromo",
+        "nombre": "Aeródromo de Vilar de Luz (Maia)",
+        "descripcion": {
+          "icao": "LPVZ",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-8.4766, 41.2275]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeródromo",
+        "nombre": "Aeródromo de Braga",
+        "descripcion": {
+          "icao": "LPBR",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-8.4444, 41.5861]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeródromo",
+        "nombre": "Aeródromo de Coimbra",
+        "descripcion": {
+          "icao": "LPCO",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-8.4691, 40.1578]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "tipo": "Aeródromo",
+        "nombre": "Aeródromo de Portimão",
+        "descripcion": {
+          "icao": "LPMT",
+          "notas": ""
+        },
+        "fill": "#FFA726",
+        "icon": "airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-8.5841, 37.1491]
       }
     }
   ]

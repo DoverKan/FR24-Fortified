@@ -4,11 +4,13 @@
     {
       "type": "Feature",
       "properties": {
-        "tipo": "Hospita",
+        "tipo": "Hospital",
         "nombre": "Hospital Perpetuo Socorro",
         "descripcion": {
           "notas": ""
-        }
+        },
+        "icon": "hospital",
+        "fill": "#EF5350"
       },
       "geometry": {
         "type": "Point",
@@ -21,11 +23,13 @@
     {
       "type": "Feature",
       "properties": {
-        "tipo": "Hospita",
+        "tipo": "Hospital",
         "nombre": "Hospital Materno Infantil",
         "descripcion": {
           "notas": ""
-        }
+        },
+        "icon": "hospital",
+        "fill": "#EF5350"
       },
       "geometry": {
         "type": "Point",
@@ -39,10 +43,12 @@
       "type": "Feature",
       "properties": {
         "nombre": "Clideba",
-        "tipo": "Hospita",
+        "tipo": "Hospital",
         "descripcion": {
           "notas": ""
-        }
+        },
+        "icon": "hospital",
+        "fill": "#EF5350"
       },
       "geometry": {
         "type": "Point",
@@ -55,11 +61,13 @@
     {
       "type": "Feature",
       "properties": {
-        "tipo": "Hospita",
+        "tipo": "Hospital",
         "nombre": "Hospital Universitario",
         "descripcion": {
           "notas": ""
-        }
+        },
+        "icon": "hospital",
+        "fill": "#EF5350"
       },
       "geometry": {
         "type": "Point",
