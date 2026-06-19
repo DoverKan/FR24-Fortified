@@ -20,6 +20,8 @@ config/config.php
 # Sistema operativo
 .DS_Store
 Thumbs.db
+desktop.ini
+ehthumbs.db
 
 # IDEs
 .vscode/

@@ -2,6 +2,8 @@
 
 Panel de monitoreo web para receptores ADS-B de FlightRadar24 (Feeder y Box). Muestra en tiempo real el estado del receptor, estadísticas de vuelos y un mapa interactivo de posiciones de aeronaves.
 
+**Repositorio:** https://github.com/DoverKan/FR24-Fortified
+
 ---
 
 ## Características
@@ -16,28 +18,122 @@ Panel de monitoreo web para receptores ADS-B de FlightRadar24 (Feeder y Box). Mu
 
 ## Requisitos
 
-- PHP 7.4 o superior
-- Extensión `curl` habilitada en PHP
-- Servidor web (Apache, Nginx) o servidor built-in de PHP
+- PHP 7.4 o superior con extensión `curl` habilitada
+- Servidor web Apache (Linux) o XAMPP (Windows)
 - Acceso de red al receptor FlightRadar24 (local o LAN)
 - Token de Mapbox (solo para la página de mapa)
 
 ---
 
-## Instalación
+## Instalación en Linux (Apache)
 
-**1. Clonar el repositorio**
-
-```bash
-git clone <url-del-repo> FR24
-cd FR24
-```
-
-**2. Configurar la aplicación**
+### 1. Instalar Apache y PHP
 
 ```bash
-cp config/config.example.php config/config.php
+sudo apt update
+sudo apt install -y apache2 php libapache2-mod-php php-curl git
 ```
+
+Verificar que los servicios estén activos:
+
+```bash
+sudo systemctl enable apache2
+sudo systemctl start apache2
+```
+
+### 2. Clonar el repositorio
+
+```bash
+cd /var/www/html
+sudo git clone https://github.com/DoverKan/FR24-Fortified.git fr24
+sudo chown -R www-data:www-data /var/www/html/fr24
+```
+
+### 3. Configurar el VirtualHost de Apache
+
+Crear el archivo de sitio:
+
+```bash
+sudo nano /etc/apache2/sites-available/fr24.conf
+```
+
+Contenido:
+
+```apache
+<VirtualHost *:80>
+    ServerName fr24.local
+    DocumentRoot /var/www/html/fr24/public
+
+    <Directory /var/www/html/fr24/public>
+        AllowOverride All
+        Require all granted
+    </Directory>
+</VirtualHost>
+```
+
+Activar el sitio:
+
+```bash
+sudo a2ensite fr24.conf
+sudo a2enmod rewrite
+sudo systemctl reload apache2
+```
+
+### 4. Configurar la aplicación
+
+```bash
+sudo cp /var/www/html/fr24/config/config.example.php /var/www/html/fr24/config/config.php
+sudo nano /var/www/html/fr24/config/config.php
+```
+
+### 5. Acceder al dashboard
+
+Abre el navegador en `http://localhost` o en la IP del servidor.
+
+---
+
+## Instalación en Windows (XAMPP)
+
+### 1. Instalar XAMPP
+
+1. Descarga XAMPP desde https://www.apachefriends.org
+2. Ejecuta el instalador y selecciona al menos **Apache** y **PHP**
+3. Abre el **Panel de Control de XAMPP** e inicia el módulo **Apache**
+
+### 2. Clonar el repositorio
+
+Abre **Git Bash** o **PowerShell** y ejecuta:
+
+```bash
+cd C:\xampp\htdocs
+git clone https://github.com/DoverKan/FR24-Fortified.git fr24
+```
+
+### 3. Configurar la aplicación
+
+```bash
+copy C:\xampp\htdocs\fr24\config\config.example.php C:\xampp\htdocs\fr24\config\config.php
+```
+
+Edita `config.php` con un editor de texto (Notepad++, VSCode, etc.).
+
+### 4. Verificar que PHP cURL está habilitado
+
+Abre `C:\xampp\php\php.ini`, busca la línea siguiente y asegúrate de que **no** tiene `;` al inicio:
+
+```ini
+extension=curl
+```
+
+Reinicia Apache desde el Panel de Control de XAMPP.
+
+### 5. Acceder al dashboard
+
+Abre el navegador en `http://localhost/fr24`
+
+---
+
+## Configuración
 
 Editar `config/config.php` con los valores de tu receptor:
 
@@ -49,21 +145,6 @@ define('ICAO',         'LEBZ');           // Código ICAO del aeropuerto (opcion
 define('LAT',          38.891944);        // Latitud del centro del mapa (opcional)
 define('LON',          -6.822397);        // Longitud del centro del mapa (opcional)
 define('MAPBOX_TOKEN', 'pk.eyJ...');     // Token de Mapbox (necesario para el mapa)
-```
-
-**3. Iniciar el servidor**
-
-```bash
-# Servidor built-in de PHP (desarrollo)
-php -S localhost:8000 -t public/
-```
-
-O configurar Apache/Nginx apuntando el `document root` a `public/`.
-
-**4. Abrir en el navegador**
-
-```
-http://localhost:8000
 ```
 
 ---
