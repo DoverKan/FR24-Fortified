@@ -1,6 +1,6 @@
 # FlightRadar24-Fortified
 
-Panel de monitoreo web para receptores ADS-B de FlightRadar24 (Feeder y Box). Muestra en tiempo real el estado del receptor, estadísticas de vuelos y un mapa interactivo de posiciones de aeronaves.
+Panel de monitoreo web para receptores ADS-B de FlightRadar24 (Feeder y Box). Muestra en tiempo real el estado del receptor, estadísticas de vuelos y un mapa interactivo de posiciones de aeronaves con capas meteorológicas y de situación.
 
 **Repositorio:** https://github.com/DoverKan/FR24-Fortified
 
@@ -9,10 +9,15 @@ Panel de monitoreo web para receptores ADS-B de FlightRadar24 (Feeder y Box). Mu
 ## Características
 
 - **Dashboard en tiempo real** — estado del receptor, estadísticas y tabla de vuelos activos con auto-refresco
-- **Mapa interactivo** — visualización sobre Mapbox GL con capas GeoJSON configurables (espacio aéreo, aeropuertos, VOR/DME, helipuertos, hospitales, nodos Meshtastic, etc.)
+- **Mapa interactivo** — Mapbox GL con múltiples estilos de base (oscuro, calles, satélite, terreno) y capas GeoJSON configurables
 - **Seguimiento de aeronaves** — posiciones, rumbo, altitud y tracks históricos en tiempo real vía stream SBS (puerto 30003); iconos con código de colores por altitud y alerta de squawk de emergencia
-- **Controles del mapa** — centrar en todos los aviones, seguir un avión seleccionado, retener tracks ilimitados, exportar el mapa como PNG
-- **Consola SBS** — stream en tiempo real del protocolo SBS/AVR (puerto 30003) vía Server-Sent Events
+- **Controles del mapa** — centrar en todos los aviones, seguir un avión seleccionado, retener tracks ilimitados, exportar el mapa como PNG, anillos de distancia NM, perfil de elevación, regla de medición
+- **Capas meteorológicas** — radar de precipitación animado (RainViewer) con datos de los últimos ~40 min, e imagen de nubosidad diaria por satélite (NASA GIBS / MODIS Terra)
+- **Incendios activos** — capa FIRMS (NASA) con puntos interactivos en tiempo real; muestra satélite de detección, confianza, FRP (Fire Radiative Power) y hora UTC
+- **Capas GeoJSON** — espacio aéreo (CTR, LER, sectores), aeropuertos, VOR/DME, puntos visuales, helipuertos, hospitales, antenas, nodos Meshtastic y cualquier GeoJSON personalizado
+- **Edificios 3D y terreno** — extrusión de edificios y elevación del terreno (requiere token Mapbox)
+- **Capa de tráfico** — tráfico rodado en tiempo real (requiere token Mapbox)
+- **Consola SBS** — stream en tiempo real del protocolo SBS (puerto 30003) vía Server-Sent Events
 - **Soporte dual** — compatible con receptores tipo `feeder` y tipo `box`
 - **Versión standalone** — archivo único `fr24-standalone.php` para despliegue sin configuración adicional
 
@@ -23,7 +28,8 @@ Panel de monitoreo web para receptores ADS-B de FlightRadar24 (Feeder y Box). Mu
 - PHP 7.4 o superior con extensión `curl` habilitada
 - Servidor web Apache (Linux) o XAMPP (Windows)
 - Acceso de red al receptor FlightRadar24 (local o LAN)
-- Token de Mapbox (solo para la página de mapa)
+- Token de Mapbox *(solo para la página de mapa)*
+- MAP_KEY de NASA FIRMS *(solo para la capa de incendios)*
 
 ---
 
@@ -136,14 +142,42 @@ Abre el navegador en `http://localhost/fr24`
 Editar `config/config.php` con los valores de tu receptor:
 
 ```php
-define('FR24_IP',      '192.168.1.11');  // IP del receptor en la red local
-define('FR24_PORT',    8754);             // Puerto del receptor
-define('FR24_TYPE',    'box');            // 'feeder' o 'box'
-define('ICAO',         'LEBZ');           // Código ICAO del aeropuerto (opcional)
-define('LAT',          38.891944);        // Latitud del centro del mapa (opcional)
-define('LON',          -6.822397);        // Longitud del centro del mapa (opcional)
-define('MAPBOX_TOKEN', 'pk.eyJ...');     // Token de Mapbox (necesario para el mapa)
+define('FR24_IP',        '192.168.1.11');  // IP del receptor en la red local
+define('FR24_PORT',      8754);             // Puerto del receptor
+define('FR24_TYPE',      'box');            // 'feeder' o 'box'
+define('ICAO',           'LEBZ');           // Código ICAO del aeropuerto (opcional)
+define('LAT',            38.891944);        // Latitud del centro del mapa (opcional)
+define('LON',            -6.822397);        // Longitud del centro del mapa (opcional)
+define('MAPBOX_TOKEN',   'pk.eyJ...');      // Token de Mapbox — https://account.mapbox.com
+define('FIRMS_MAP_KEY',  'xxxxxxxx');       // MAP_KEY de NASA FIRMS — https://firms.modaps.eosdis.nasa.gov/usfs/api/map_key/
 ```
+
+`MAPBOX_TOKEN` y `FIRMS_MAP_KEY` son opcionales. Sin ellos el mapa funciona con cartografía básica de CartoDB y sin la capa de incendios.
+
+---
+
+## Capas del mapa
+
+### Capas GeoJSON
+
+Coloca archivos `.geojson` en `public/geojson/` y se cargarán automáticamente. Tipos de geometría soportados: puntos, líneas y polígonos con popups interactivos.
+
+### Capas meteorológicas y de situación
+
+| Capa | Fuente | Clave necesaria | Notas |
+|---|---|---|---|
+| Radar meteo | RainViewer | No | Animación de los últimos ~40 min (8 fotogramas) |
+| Satélite nubosidad | NASA GIBS / MODIS Terra | No | Imagen del día anterior; desactivada por defecto |
+| Incendios activos | NASA FIRMS / VIIRS SNPP | `FIRMS_MAP_KEY` | Últimas 24 h; puntos clicables con detalle |
+
+### Información de incendios (popup FIRMS)
+
+Al hacer clic en un punto de incendio se muestra:
+- Fecha y hora UTC de detección
+- Satélite de detección (VIIRS SNPP)
+- Nivel de confianza: `high` / `nominal` / `low`
+- FRP — Fire Radiative Power en MW
+- Periodo: Diurno / Nocturno
 
 ---
 
@@ -172,9 +206,9 @@ FR24/
 │   ├── data.php                # Endpoint JSON para auto-refresco
 │   ├── sse.php                 # Endpoint Server-Sent Events
 │   ├── fr24-standalone.php     # Versión autónoma en un solo archivo
-│   ├── partials/               # Componentes reutilizables (sidebar, topbar)
+│   ├── partials/               # Componentes reutilizables (sidebar, topbar, footer)
 │   ├── css/                    # Hojas de estilo
-│   └── geojson/                # Capas GeoJSON (LER, CTR, sectores, aeropuertos, VOR/DME, helipuertos, hospitales, Meshtastic, etc.)
+│   └── geojson/                # Capas GeoJSON personalizadas
 │
 └── docs/                       # Documentación adicional
 ```
@@ -186,10 +220,10 @@ FR24/
 | Ruta | Descripción |
 |---|---|
 | `/` o `/index.php` | Dashboard principal con estado del receptor y tabla de vuelos |
-| `/mapa.php` | Mapa interactivo con posiciones de aeronaves |
+| `/mapa.php` | Mapa interactivo con posiciones de aeronaves y capas adicionales |
 | `/console.php` | Consola del stream SBS en tiempo real |
 | `/data.php` | API JSON para refresco de datos del dashboard |
-| `/sse.php` | Stream de Server-Sent Events (usado por la consola) |
+| `/sse.php` | Stream Server-Sent Events (usado por mapa y consola) |
 | `/fr24-standalone.php` | Versión standalone (admite `?action=stream\|ping\|stats\|weather`) |
 
 ---
@@ -223,6 +257,9 @@ define('FR24_TYPE', 'box');
 | Frontend | HTML5, CSS3, JavaScript (vanilla) |
 | UI | Bootstrap 5.3.3 |
 | Mapas | Mapbox GL JS v3.3.0 |
+| Radar / Satélite IR | RainViewer API (gratuita) |
+| Nubosidad satélite | NASA GIBS / MODIS Terra (gratuita) |
+| Incendios | NASA FIRMS / VIIRS SNPP NRT (MAP_KEY gratuita) |
 | HTTP | PHP cURL (peticiones paralelas) |
 | Streaming | Server-Sent Events (SSE) |
 

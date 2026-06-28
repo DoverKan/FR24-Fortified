@@ -38,7 +38,7 @@
     {
       "type": "Feature",
       "properties": {
-        "nombre": "Hospital Universitario de Badajoz",
+        "nombre": "Universitario",
         "fill": "#FF7043",
         "descripcion": {
           "icao": "ZZZZ",
@@ -55,7 +55,7 @@
     {
       "type": "Feature",
       "properties": {
-        "nombre": "Hospital San Pedro de Alcántara (Cáceres)",
+        "nombre": "San Pedro de Alcántara",
         "fill": "#FF7043",
         "descripcion": {
           "icao": "ZZZZ",
@@ -72,7 +72,7 @@
     {
       "type": "Feature",
       "properties": {
-        "nombre": "Hospital de Mérida",
+        "nombre": "Mérida",
         "fill": "#FF7043",
         "descripcion": {
           "icao": "ZZZZ",
@@ -89,7 +89,7 @@
     {
       "type": "Feature",
       "properties": {
-        "nombre": "Hospital Virgen del Puerto (Plasencia)",
+        "nombre": "Virgen del Puerto",
         "fill": "#FF7043",
         "descripcion": {
           "icao": "ZZZZ",
@@ -106,7 +106,7 @@
     {
       "type": "Feature",
       "properties": {
-        "nombre": "Hospital Don Benito-Villanueva",
+        "nombre": "Don Benito-Villanueva",
         "fill": "#FF7043",
         "descripcion": {
           "icao": "ZZZZ",
@@ -123,7 +123,7 @@
     {
       "type": "Feature",
       "properties": {
-        "nombre": "Hospital Campo Arañuelo (Navalmoral)",
+        "nombre": "Campo Arañuelo",
         "fill": "#FF7043",
         "descripcion": {
           "icao": "ZZZZ",
@@ -140,7 +140,7 @@
     {
       "type": "Feature",
       "properties": {
-        "nombre": "Hospital Ciudad de Coria",
+        "nombre": "Ciudad de Coria",
         "fill": "#FF7043",
         "descripcion": {
           "icao": "ZZZZ",
@@ -157,7 +157,7 @@
     {
       "type": "Feature",
       "properties": {
-        "nombre": "Hospital de Llerena",
+        "nombre": "Llerena",
         "fill": "#FF7043",
         "descripcion": {
           "icao": "ZZZZ",
@@ -174,7 +174,7 @@
     {
       "type": "Feature",
       "properties": {
-        "nombre": "Hospital de Zafra",
+        "nombre": "Zafra",
         "fill": "#FF7043",
         "descripcion": {
           "icao": "ZZZZ",
@@ -191,7 +191,7 @@
     {
       "type": "Feature",
       "properties": {
-        "nombre": "Hospital de Talarrubias",
+        "nombre": "Talarrubias",
         "fill": "#FF7043",
         "descripcion": {
           "icao": "ZZZZ",
@@ -208,7 +208,7 @@
     {
       "type": "Feature",
       "properties": {
-        "nombre": "Base Militar General Menacho (Bótoa)",
+        "nombre": "Base Militar General Menacho",
         "fill": "#FF7043",
         "descripcion": {
           "icao": "ZZZZ",
@@ -225,7 +225,7 @@
     {
       "type": "Feature",
       "properties": {
-        "nombre": "Base INFOEX Hoyos",
+        "nombre": "INFOEX Hoyos",
         "fill": "#FF7043",
         "descripcion": {
           "icao": "ZZZZ",
@@ -242,7 +242,7 @@
     {
       "type": "Feature",
       "properties": {
-        "nombre": "Base INFOEX Caminomorisco",
+        "nombre": "INFOEX Caminomorisco",
         "fill": "#FF7043",
         "descripcion": {
           "icao": "ZZZZ",
@@ -259,7 +259,7 @@
     {
       "type": "Feature",
       "properties": {
-        "nombre": "Base INFOEX Jarandilla de la Vera",
+        "nombre": "INFOEX Jarandilla",
         "fill": "#FF7043",
         "descripcion": {
           "icao": "ZZZZ",
@@ -276,7 +276,7 @@
     {
       "type": "Feature",
       "properties": {
-        "nombre": "Base INFOEX Serradilla",
+        "nombre": "INFOEX Serradilla",
         "fill": "#FF7043",
         "descripcion": {
           "icao": "ZZZZ",
@@ -293,7 +293,7 @@
     {
       "type": "Feature",
       "properties": {
-        "nombre": "Base INFOEX Valencia de Alcántara",
+        "nombre": "INFOEX Valencia de Alcántara",
         "fill": "#FF7043",
         "descripcion": {
           "icao": "ZZZZ",
@@ -310,7 +310,7 @@
     {
       "type": "Feature",
       "properties": {
-        "nombre": "Base INFOEX Guadalupe",
+        "nombre": "INFOEX Guadalupe",
         "fill": "#FF7043",
         "descripcion": {
           "icao": "ZZZZ",
@@ -327,7 +327,7 @@
     {
       "type": "Feature",
       "properties": {
-        "nombre": "Base INFOEX Herrera del Duque",
+        "nombre": "INFOEX Herrera del Duque",
         "fill": "#FF7043",
         "descripcion": {
           "icao": "ZZZZ",
@@ -344,7 +344,7 @@
     {
       "type": "Feature",
       "properties": {
-        "nombre": "Base INFOEX Manchita",
+        "nombre": "INFOEX Manchita",
         "fill": "#FF7043",
         "descripcion": {
           "icao": "ZZZZ",

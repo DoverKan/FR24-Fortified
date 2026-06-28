@@ -1,7 +1,8 @@
 <?php
 require __DIR__ . '/../src/Config.php';
 $errors      = Config::load();
-$mapboxToken = defined('MAPBOX_TOKEN') ? trim(MAPBOX_TOKEN) : '';
+$mapboxToken = defined('MAPBOX_TOKEN')   ? trim(MAPBOX_TOKEN)   : '';
+$firmsKey    = defined('FIRMS_MAP_KEY') ? trim(FIRMS_MAP_KEY) : '';
 $icao        = defined('ICAO') && trim(ICAO) !== '' ? strtoupper(trim(ICAO)) : null;
 $lat         = defined('LAT') ? (float) LAT : null;
 $lon         = defined('LON') ? (float) LON : null;
@@ -150,6 +151,7 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
     const lat          = <?= json_encode($hasCenter ? $lat : null) ?>;
     const lon          = <?= json_encode($hasCenter ? $lon : null) ?>;
     const geojsonFiles = <?= json_encode($geojsonFiles) ?>;
+    const firmsKey     = <?= json_encode($firmsKey) ?>;
 
     const center = lon !== null ? [lon, lat] : [-3, 40];
     const zoom   = lat !== null ? 9 : 6;
@@ -210,7 +212,9 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
     let tracksLocked   = false;
     let followBtnEl    = null;
     let trailsBtnEl    = null;
-    const rvState = { layers: [], current: 0, visible: true, playing: false, timer: null };
+    const rvState    = { layers: [], current: 0, visible: true, playing: false, timer: null };
+    const rvSatState = { layers: [], current: 0, visible: true, playing: false, timer: null };
+    let firmsData = null;
 
     map.addControl(new mapboxgl.FullscreenControl(), 'top-right');
     map.addControl(new mapboxgl.NavigationControl({ visualizePitch: true }), 'top-right');
@@ -541,6 +545,25 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
         </div>`;
     }
 
+    function firmsPopupHtml(p) {
+        const conf      = p.confidence ?? '—';
+        const confColor = conf === 'high' ? '#ef4444' : conf === 'nominal' ? '#f97316' : '#eab308';
+        const frp       = p.frp ? parseFloat(p.frp).toFixed(1) + ' MW' : '—';
+        const raw       = p.acq_time ? String(p.acq_time).padStart(4, '0') : null;
+        const time      = raw ? raw.slice(0, 2) + ':' + raw.slice(2) + ' UTC' : '—';
+        const dn        = p.daynight === 'D' ? 'Diurno' : p.daynight === 'N' ? 'Nocturno' : '—';
+        return `<div style="min-width:160px;font-size:.85rem">
+            <div style="font-weight:700;font-size:1rem;margin-bottom:.3rem;color:#ef4444">Incendio activo</div>
+            <table style="border-collapse:collapse;width:100%">
+                <tr><td style="color:#888;padding:2px 8px 2px 0;white-space:nowrap">Fecha</td><td style="color:#ddd">${p.acq_date ?? '—'} ${time}</td></tr>
+                <tr><td style="color:#888;padding:2px 8px 2px 0">Satélite</td><td style="color:#ddd">${p.satellite ?? '—'}</td></tr>
+                <tr><td style="color:#888;padding:2px 8px 2px 0">Confianza</td><td style="color:${confColor}">${conf}</td></tr>
+                <tr><td style="color:#888;padding:2px 8px 2px 0">FRP</td><td style="color:#ddd">${frp}</td></tr>
+                <tr><td style="color:#888;padding:2px 8px 2px 0">Periodo</td><td style="color:#ddd">${dn}</td></tr>
+            </table>
+        </div>`;
+    }
+
     // ---- Registros de capas ----
     const LAYER_LABELS = {
         vor: 'VOR / DME', visualpoint: 'Puntos visuales',
@@ -851,7 +874,7 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
                 source: 'mapbox-traffic',
                 'source-layer': 'traffic',
                 minzoom: 11,
-                layout: { 'line-join': 'round', 'line-cap': 'round' },
+                layout: { 'line-join': 'round', 'line-cap': 'round', visibility: 'none' },
                 paint: {
                     'line-width': ['interpolate', ['linear'], ['zoom'], 8, 1, 14, 3, 18, 6],
                     'line-color': [
@@ -882,6 +905,7 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
                 filter: ['==', 'extrude', 'true'],
                 type: 'fill-extrusion',
                 minzoom: 15,
+                layout: { visibility: 'none' },
                 paint: {
                     'fill-extrusion-color': '#1e2d45',
                     'fill-extrusion-height': [
@@ -934,6 +958,40 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
         if (btn) btn.textContent = '▶';
     }
 
+    function rvSatSetFrame(idx) {
+        rvSatState.layers.forEach((l, i) => {
+            if (map.getLayer(l.id))
+                map.setLayoutProperty(l.id, 'visibility', (rvSatState.visible && i === idx) ? 'visible' : 'none');
+        });
+        rvSatState.current = idx;
+        const el = document.getElementById('rvsat-time');
+        if (el && rvSatState.layers[idx])
+            el.textContent = new Date(rvSatState.layers[idx].ts * 1000)
+                .toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function rvSatSetVisible(v) {
+        rvSatState.visible = v;
+        rvSatSetFrame(rvSatState.current);
+    }
+
+    function rvSatPlay() {
+        if (rvSatState.timer) return;
+        rvSatState.playing = true;
+        const btn = document.getElementById('rvsat-play');
+        if (btn) btn.textContent = '⏸';
+        rvSatState.timer = setInterval(() => rvSatSetFrame((rvSatState.current + 1) % rvSatState.layers.length), 700);
+    }
+
+    function rvSatPause() {
+        if (!rvSatState.timer) return;
+        clearInterval(rvSatState.timer);
+        rvSatState.timer = null;
+        rvSatState.playing = false;
+        const btn = document.getElementById('rvsat-play');
+        if (btn) btn.textContent = '▶';
+    }
+
     function addRainViewer() {
         rvPause();
         rvState.layers.forEach(l => {
@@ -948,25 +1006,22 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
         fetch('https://api.rainviewer.com/public/weather-maps.json')
             .then(r => r.json())
             .then(data => {
-                const frames = (data.radar?.past ?? []).slice(-8);
-                if (!frames.length) return;
-                frames.forEach((frame, i) => {
+                const host = data.host || 'https://tilecache.rainviewer.com';
+                const radarFrames = (data.radar?.past ?? []).slice(-8);
+                radarFrames.forEach((frame, i) => {
                     const srcId   = 'rv-src-' + i;
                     const layerId = 'rv-lyr-' + i;
-                    const isLast  = i === frames.length - 1;
+                    const isLast  = i === radarFrames.length - 1;
                     if (!map.getSource(srcId)) {
                         map.addSource(srcId, {
                             type: 'raster',
-                            tiles: [(data.host || 'https://tilecache.rainviewer.com') + frame.path + '/256/{z}/{x}/{y}/2/1_1.png'],
-                            tileSize: 256,
-                            minzoom: 0,
-                            maxzoom: 6,
+                            tiles: [host + frame.path + '/256/{z}/{x}/{y}/2/1_1.png'],
+                            tileSize: 256, minzoom: 0, maxzoom: 6,
                             attribution: '© <a href="https://www.rainviewer.com" target="_blank" rel="noopener">RainViewer</a>'
                         });
                     }
                     if (!map.getLayer(layerId)) {
-                        map.addLayer({
-                            id: layerId, type: 'raster', source: srcId,
+                        map.addLayer({ id: layerId, type: 'raster', source: srcId,
                             layout: { visibility: isLast ? 'visible' : 'none' },
                             paint: { 'raster-opacity': 0.65 }
                         });
@@ -974,10 +1029,112 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
                     rvState.layers.push({ id: layerId, src: srcId, ts: frame.time });
                     layerGroups['rainviewer'].ids.push(layerId);
                 });
-                rvState.current = rvState.layers.length - 1;
+                if (rvState.layers.length) rvState.current = rvState.layers.length - 1;
                 buildLayerPanel();
             })
             .catch(err => console.warn('[RainViewer]', err));
+    }
+
+    // ---- Satélite nubosidad (NASA GIBS · MODIS Terra) ----
+    function addSatelliteGIBS() {
+        if (!layerGroups['rvsatellite'])
+            layerGroups['rvsatellite'] = { label: 'Satélite nubosidad', ids: [], markers: [] };
+        layerGroups['rvsatellite'].ids = [];
+
+        try { if (map.getLayer('gibs-sat'))     map.removeLayer('gibs-sat');     } catch (_) {}
+        try { if (map.getSource('gibs-sat-src')) map.removeSource('gibs-sat-src'); } catch (_) {}
+
+        // Usar ayer como fallback garantizado; hoy puede no estar aún procesado
+        const d  = new Date();
+        d.setUTCDate(d.getUTCDate() - 1);
+        const today = d.toISOString().slice(0, 10);
+
+        map.addSource('gibs-sat-src', {
+            type: 'raster',
+            tiles: [`https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/MODIS_Terra_CorrectedReflectance_TrueColor/default/${today}/GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg`],
+            tileSize: 256,
+            maxzoom: 9,
+            attribution: '© NASA / GIBS / MODIS Terra'
+        });
+        map.addLayer({
+            id: 'gibs-sat',
+            type: 'raster',
+            source: 'gibs-sat-src',
+            layout: { visibility: 'none' },
+            paint: { 'raster-opacity': 0.75 }
+        });
+        layerGroups['rvsatellite'].ids = ['gibs-sat'];
+    }
+
+    // ---- FIRMS (incendios activos) ----
+    function applyFirmsData(geojson) {
+        if (!map.getSource('firms')) {
+            map.addSource('firms', { type: 'geojson', data: geojson });
+        } else {
+            map.getSource('firms').setData(geojson);
+        }
+        if (!map.getLayer('firms-circles')) {
+            map.addLayer({
+                id: 'firms-circles',
+                type: 'circle',
+                source: 'firms',
+                paint: {
+                    'circle-radius': ['interpolate', ['linear'], ['zoom'], 3, 3, 8, 7, 14, 12],
+                    'circle-color': ['match', ['get', 'confidence'],
+                        'high',    '#ef4444',
+                        'nominal', '#f97316',
+                        'low',     '#eab308',
+                        '#f97316'
+                    ],
+                    'circle-opacity': 0.85,
+                    'circle-stroke-color': 'rgba(0,0,0,.45)',
+                    'circle-stroke-width': 0.8
+                }
+            });
+            fillLayerIds.push('firms-circles');
+            layerPopupMeta['firms-circles'] = { label: 'Incendio FIRMS', colorProp: null, defaultColor: '#ef4444', popupFn: firmsPopupHtml };
+        }
+        layerGroups['firms'].ids = ['firms-circles'];
+        buildLayerPanel();
+    }
+
+    function fetchAndAddFirms() {
+        const b   = map.getBounds();
+        const pad = 2;
+        const w   = Math.max(-180, b.getWest()  - pad).toFixed(2);
+        const s   = Math.max(-90,  b.getSouth() - pad).toFixed(2);
+        const e   = Math.min(180,  b.getEast()  + pad).toFixed(2);
+        const n   = Math.min(90,   b.getNorth() + pad).toFixed(2);
+
+        fetch(`https://firms.modaps.eosdis.nasa.gov/api/area/csv/${firmsKey}/VIIRS_SNPP_NRT/${w},${s},${e},${n}/1/`)
+            .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+            .then(csv => {
+                const lines   = csv.trim().split('\n');
+                const headers = lines[0].split(',').map(h => h.trim());
+                const features = [];
+                for (let i = 1; i < lines.length; i++) {
+                    const vals = lines[i].split(',');
+                    if (vals.length < 2) continue;
+                    const row = {};
+                    headers.forEach((h, j) => { row[h] = (vals[j] ?? '').trim(); });
+                    const lat = parseFloat(row.latitude);
+                    const lon = parseFloat(row.longitude);
+                    if (isNaN(lat) || isNaN(lon)) continue;
+                    features.push({ type: 'Feature', geometry: { type: 'Point', coordinates: [lon, lat] }, properties: row });
+                }
+                firmsData = { type: 'FeatureCollection', features };
+                applyFirmsData(firmsData);
+            })
+            .catch(err => console.warn('[FIRMS]', err));
+    }
+
+    function addFirms() {
+        if (!firmsKey) return;
+        if (!layerGroups['firms'])
+            layerGroups['firms'] = { label: 'Incendios FIRMS', ids: [], markers: [] };
+        layerGroups['firms'].ids = [];
+        if (firmsData) applyFirmsData(firmsData);
+        else           fetchAndAddFirms();
     }
 
     // ---- Añadir todas las capas (y re-añadir tras cambio de estilo) ----
@@ -992,6 +1149,8 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
         addBuildings();
         addTraffic();
         addRainViewer();
+        addSatelliteGIBS();
+        addFirms();
         markersAdded = true;
         buildLayerPanel();
     }
@@ -1103,7 +1262,11 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
                 const lbl = document.createElement('label');
                 lbl.className = 'lp-row';
                 const cb = document.createElement('input');
-                cb.type = 'checkbox'; cb.checked = true;
+                const firstId = group.ids[0];
+                const isVisible = firstId && map.getLayer(firstId)
+                    ? map.getLayoutProperty(firstId, 'visibility') !== 'none'
+                    : true;
+                cb.type = 'checkbox'; cb.checked = isVisible;
                 cb.addEventListener('change', () => {
                     const vis = cb.checked ? 'visible' : 'none';
                     group.ids.forEach(id => { if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', vis); });
@@ -1168,6 +1331,7 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
                 rvWrap.appendChild(rvCtrls);
                 panel.appendChild(rvWrap);
             }
+
         }
 
         // ── Sección aeronaves ──

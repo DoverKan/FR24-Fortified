@@ -28,3 +28,10 @@ ehthumbs.db
 .idea/
 *.sublime-project
 *.sublime-workspace
+
+# Archivos temporales de editores
+*.swp
+*.swo
+*~
+*.bak
+*.orig
