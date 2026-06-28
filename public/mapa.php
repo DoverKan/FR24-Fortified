@@ -210,6 +210,7 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
     let tracksLocked   = false;
     let followBtnEl    = null;
     let trailsBtnEl    = null;
+    const rvState = { layers: [], current: 0, visible: true, playing: false, timer: null };
 
     map.addControl(new mapboxgl.FullscreenControl(), 'top-right');
     map.addControl(new mapboxgl.NavigationControl({ visualizePitch: true }), 'top-right');
@@ -376,6 +377,13 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
         });
         map.addControl(elevation, 'bottom-right');
     }
+
+    // ---- Indicador de zoom ----
+    const zoomDisplay = document.createElement('div');
+    zoomDisplay.style.cssText = 'background:rgba(10,18,35,.78);color:#8899bb;font-size:.68rem;font-family:monospace;padding:3px 8px;border-radius:4px;backdrop-filter:blur(3px);pointer-events:none;letter-spacing:.04em';
+    zoomDisplay.textContent = 'Z ' + map.getZoom().toFixed(1);
+    map.addControl({ onAdd: () => zoomDisplay, onRemove: () => {} }, 'bottom-right');
+    map.on('zoom', () => { zoomDisplay.textContent = 'Z ' + map.getZoom().toFixed(1); });
 
     // ---- Terreno 3D ----
     function addTerrain() {
@@ -891,6 +899,87 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
         layerGroups['buildings'].ids.push('3d-buildings');
     }
 
+    // ---- RainViewer (radar meteorológico) ----
+    function rvSetFrame(idx) {
+        rvState.layers.forEach((l, i) => {
+            if (map.getLayer(l.id))
+                map.setLayoutProperty(l.id, 'visibility', (rvState.visible && i === idx) ? 'visible' : 'none');
+        });
+        rvState.current = idx;
+        const el = document.getElementById('rv-time');
+        if (el && rvState.layers[idx])
+            el.textContent = new Date(rvState.layers[idx].ts * 1000)
+                .toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function rvSetVisible(v) {
+        rvState.visible = v;
+        rvSetFrame(rvState.current);
+    }
+
+    function rvPlay() {
+        if (rvState.timer) return;
+        rvState.playing = true;
+        const btn = document.getElementById('rv-play');
+        if (btn) btn.textContent = '⏸';
+        rvState.timer = setInterval(() => rvSetFrame((rvState.current + 1) % rvState.layers.length), 700);
+    }
+
+    function rvPause() {
+        if (!rvState.timer) return;
+        clearInterval(rvState.timer);
+        rvState.timer = null;
+        rvState.playing = false;
+        const btn = document.getElementById('rv-play');
+        if (btn) btn.textContent = '▶';
+    }
+
+    function addRainViewer() {
+        rvPause();
+        rvState.layers.forEach(l => {
+            try { if (map.getLayer(l.id))  map.removeLayer(l.id);  } catch (_) {}
+            try { if (map.getSource(l.src)) map.removeSource(l.src); } catch (_) {}
+        });
+        rvState.layers = [];
+        if (!layerGroups['rainviewer'])
+            layerGroups['rainviewer'] = { label: 'Radar meteo', ids: [], markers: [] };
+        layerGroups['rainviewer'].ids = [];
+
+        fetch('https://api.rainviewer.com/public/weather-maps.json')
+            .then(r => r.json())
+            .then(data => {
+                const frames = (data.radar?.past ?? []).slice(-8);
+                if (!frames.length) return;
+                frames.forEach((frame, i) => {
+                    const srcId   = 'rv-src-' + i;
+                    const layerId = 'rv-lyr-' + i;
+                    const isLast  = i === frames.length - 1;
+                    if (!map.getSource(srcId)) {
+                        map.addSource(srcId, {
+                            type: 'raster',
+                            tiles: [(data.host || 'https://tilecache.rainviewer.com') + frame.path + '/256/{z}/{x}/{y}/2/1_1.png'],
+                            tileSize: 256,
+                            minzoom: 0,
+                            maxzoom: 6,
+                            attribution: '© <a href="https://www.rainviewer.com" target="_blank" rel="noopener">RainViewer</a>'
+                        });
+                    }
+                    if (!map.getLayer(layerId)) {
+                        map.addLayer({
+                            id: layerId, type: 'raster', source: srcId,
+                            layout: { visibility: isLast ? 'visible' : 'none' },
+                            paint: { 'raster-opacity': 0.65 }
+                        });
+                    }
+                    rvState.layers.push({ id: layerId, src: srcId, ts: frame.time });
+                    layerGroups['rainviewer'].ids.push(layerId);
+                });
+                rvState.current = rvState.layers.length - 1;
+                buildLayerPanel();
+            })
+            .catch(err => console.warn('[RainViewer]', err));
+    }
+
     // ---- Añadir todas las capas (y re-añadir tras cambio de estilo) ----
     function addAllCustomLayers() {
         addTerrain();
@@ -902,6 +991,7 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
         addDistanceRings();
         addBuildings();
         addTraffic();
+        addRainViewer();
         markersAdded = true;
         buildLayerPanel();
     }
@@ -1009,6 +1099,7 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
             t.className = 'lp-title'; t.style.marginTop = '10px'; t.textContent = 'Capas';
             panel.appendChild(t);
             groups.forEach(([groupId, group]) => {
+                if (groupId === 'rainviewer') return;
                 const lbl = document.createElement('label');
                 lbl.className = 'lp-row';
                 const cb = document.createElement('input');
@@ -1022,6 +1113,61 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
                 lbl.appendChild(document.createTextNode(' ' + group.label));
                 panel.appendChild(lbl);
             });
+
+            // ── RainViewer ──
+            if (rvState.layers.length > 0) {
+                const rvWrap = document.createElement('div');
+
+                const rvTopRow = document.createElement('label');
+                rvTopRow.className = 'lp-row';
+                const rvCb = document.createElement('input');
+                rvCb.type = 'checkbox'; rvCb.checked = rvState.visible; rvCb.style.cursor = 'pointer';
+                rvCb.addEventListener('change', () => {
+                    rvSetVisible(rvCb.checked);
+                    if (!rvCb.checked) rvPause();
+                    rvCtrls.style.display = rvCb.checked ? '' : 'none';
+                });
+                rvTopRow.appendChild(rvCb);
+                rvTopRow.appendChild(document.createTextNode(' Radar meteo'));
+                rvWrap.appendChild(rvTopRow);
+
+                const rvCtrls = document.createElement('div');
+                rvCtrls.style.cssText = 'padding:3px 0 2px 18px;display:flex;align-items:center;gap:4px';
+                if (!rvState.visible) rvCtrls.style.display = 'none';
+
+                const mkRvBtn = (id, txt, title, fn) => {
+                    const b = document.createElement('button');
+                    if (id) b.id = id;
+                    b.textContent = txt; b.title = title;
+                    b.style.cssText = 'background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:#ccc;cursor:pointer;border-radius:3px;padding:0 5px;font-size:.72rem;line-height:1.6';
+                    b.addEventListener('click', fn);
+                    return b;
+                };
+
+                rvCtrls.appendChild(mkRvBtn('', '‹', 'Fotograma anterior', () => {
+                    rvPause();
+                    rvSetFrame((rvState.current - 1 + rvState.layers.length) % rvState.layers.length);
+                }));
+                rvCtrls.appendChild(mkRvBtn('rv-play', rvState.playing ? '⏸' : '▶', 'Reproducir/pausar animación', () => {
+                    if (rvState.playing) rvPause(); else rvPlay();
+                }));
+                rvCtrls.appendChild(mkRvBtn('', '›', 'Fotograma siguiente', () => {
+                    rvPause();
+                    rvSetFrame((rvState.current + 1) % rvState.layers.length);
+                }));
+
+                const timeEl = document.createElement('span');
+                timeEl.id = 'rv-time';
+                timeEl.style.cssText = 'font-size:.7rem;color:#888;margin-left:2px';
+                if (rvState.layers[rvState.current]) {
+                    timeEl.textContent = new Date(rvState.layers[rvState.current].ts * 1000)
+                        .toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+                }
+                rvCtrls.appendChild(timeEl);
+
+                rvWrap.appendChild(rvCtrls);
+                panel.appendChild(rvWrap);
+            }
         }
 
         // ── Sección aeronaves ──
