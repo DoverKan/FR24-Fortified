@@ -33,9 +33,10 @@
       "properties": {
         "nombre": "Sector 6",
         "descripcion": {
-          "notas": ""
+          "Notas": "TSA Sector 6",
+          "Flow Level": "FL120 / FL350"
         },
-        "fill": "#7E57C2",
+        "fill": "#C60000",
         "tipo": "SEC",
         "icon": ""
       }
@@ -80,9 +81,10 @@
       "properties": {
         "nombre": "Sector 5",
         "descripcion": {
-          "notas": ""
+          "Notas": "TSA Sector 5",
+          "Flow Level": "FL100 / FL350"
         },
-        "fill": "#7E57C2",
+        "fill": "#D48EEB",
         "tipo": "SEC",
         "icon": ""
       }
@@ -123,9 +125,10 @@
       "properties": {
         "nombre": "Sector 4",
         "descripcion": {
-          "notas": ""
+          "Notas": "TSA Zafra W",
+          "Flow Level": "FL260 / FL350"
         },
-        "fill": "#7E57C2",
+        "fill": "#BFBFBF",
         "tipo": "SEC",
         "icon": ""
       }
@@ -162,9 +165,10 @@
       "properties": {
         "nombre": "Sector 3",
         "descripcion": {
-          "notas": ""
+          "Notas": "TSA Zafra E",
+          "Flow Level": "FL260 / FL350"
         },
-        "fill": "#7E57C2",
+        "fill": "#CCF77B",
         "tipo": "SEC",
         "icon": ""
       }
@@ -201,9 +205,10 @@
       "properties": {
         "nombre": "Sector 2",
         "descripcion": {
-          "notas": ""
+          "Notas": "TSA Mérida S",
+          "Flow Level": "FL260 / FL350"
         },
-        "fill": "#7E57C2",
+        "fill": "#00AD54",
         "tipo": "SEC",
         "icon": ""
       }
@@ -244,10 +249,71 @@
       "properties": {
         "nombre": "Sector 1",
         "descripcion": {
-          "notas": ""
+          "Notas": "TSA Mérida N",
+          "Flow Level": "FL260 / FL350"
         },
-        "fill": "#7E57C2",
+        "fill": "#6372F4",
         "tipo": "SEC",
+        "icon": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -7.044512000000001,
+              38.370703,
+              0
+            ],
+            [
+              -6.720208,
+              38.9571,
+              0
+            ],
+            [
+              -5.634552000000001,
+              38.568671,
+              0
+            ],
+            [
+              -6.07789,
+              38.023949,
+              0
+            ],
+            [
+              -7.216949,
+              38.432524,
+              0
+            ],
+            [
+              -6.889662,
+              39.011873,
+              0
+            ],
+            [
+              -6.720208,
+              38.9571,
+              0
+            ],
+            [
+              -7.044512000000001,
+              38.370703,
+              0
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "nombre": "Sector E",
+        "descripcion": {
+          "Notas": "TSA RPA N",
+          "Flow Level": "FL260 / FL350"
+        },
+        "tipo": "SEC",
+        "fill": "#C0DBD2",
         "icon": ""
       }
     }
