@@ -162,6 +162,13 @@ define('FIRMS_MAP_KEY',  'xxxxxxxx');       // MAP_KEY de NASA FIRMS — https:/
 
 Coloca archivos `.geojson` en `public/geojson/` y se cargarán automáticamente. Tipos de geometría soportados: puntos, líneas y polígonos con popups interactivos.
 
+Consulta la guía completa en [docs/geojson.md](docs/geojson.md):
+- Estructura de propiedades (`nombre`, `tipo`, `fill`, `icon`, `descripcion`)
+- Tipos de geometría con ejemplos (Point, Polygon, LineString, MultiPolygon)
+- Tabla de iconos disponibles
+- Cómo obtener coordenadas desde Overpass Turbo, geojson.io o Google Maps
+- Validación y errores comunes
+
 ### Capas meteorológicas y de situación
 
 | Capa | Fuente | Clave necesaria | Notas |
