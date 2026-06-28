@@ -907,7 +907,16 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
                 minzoom: 15,
                 layout: { visibility: 'none' },
                 paint: {
-                    'fill-extrusion-color': '#1e2d45',
+                    'fill-extrusion-color': [
+                        'match', ['get', 'type'],
+                        ['hospital', 'clinic', 'healthcare'],           '#dc2626',
+                        ['school', 'college', 'university', 'kindergarten'], '#d97706',
+                        ['church', 'cathedral', 'mosque', 'temple'],   '#7c3aed',
+                        ['commercial', 'retail', 'supermarket'],        '#0369a1',
+                        ['industrial', 'warehouse', 'factory'],         '#374151',
+                        ['hotel', 'hostel'],                            '#0891b2',
+                        '#1e2d45'
+                    ],
                     'fill-extrusion-height': [
                         'interpolate', ['linear'], ['zoom'],
                         15, 0, 15.05, ['get', 'height']
