@@ -162,6 +162,7 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
         { id: 'streets',   label: 'Calles',    url: 'mapbox://styles/mapbox/streets-v12' },
         { id: 'satellite', label: 'Satélite',  url: 'mapbox://styles/mapbox/satellite-streets-v12' },
         { id: 'terrain',   label: 'Terreno',   url: 'mapbox://styles/mapbox/outdoors-v12' },
+        { id: 'standard',  label: 'Standard',  url: 'mapbox://styles/mapbox/standard' },
     ] : [
         { id: 'carto-dark', label: 'Oscuro', url: null },
         { id: 'osm',        label: 'OpenStreetMap', url: {
@@ -1296,6 +1297,79 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
         else           fetchAndAddFirms();
     }
 
+    // ---- Iluminación solar (capa sky + fog) ----
+    let dayNightEnabled = false;
+    let dayNightTimer   = null;
+
+    function getSunPos(ms, latDeg, lonDeg) {
+        const D2R = Math.PI / 180;
+        const JD  = ms / 86400000 + 2440587.5;
+        const n   = JD - 2451545.0;
+        const L   = ((280.460 + 0.9856474 * n) % 360 + 360) % 360;
+        const gR  = ((357.528 + 0.9856003 * n) % 360 + 360) % 360 * D2R;
+        const lam = (L + 1.915 * Math.sin(gR) + 0.020 * Math.sin(2 * gR)) * D2R;
+        const eps = (23.439 - 0.0000004 * n) * D2R;
+        const decl = Math.asin(Math.max(-1, Math.min(1, Math.sin(eps) * Math.sin(lam))));
+        const GMST = ((6.697375 + 0.0657098242 * n + (ms % 86400000) / 3600000) % 24 + 24) % 24;
+        const HA   = ((GMST + lonDeg / 15) % 24 - 12) * 15 * D2R;
+        const latR = latDeg * D2R;
+        const sinA = Math.sin(latR) * Math.sin(decl) + Math.cos(latR) * Math.cos(decl) * Math.cos(HA);
+        const alt  = Math.asin(Math.max(-1, Math.min(1, sinA))) / D2R;
+        const az   = ((Math.atan2(-Math.sin(HA), Math.tan(decl) * Math.cos(latR) - Math.sin(latR) * Math.cos(HA)) / D2R) + 360) % 360;
+        return { alt, az };
+    }
+
+    function sunPreset(alt, rising) {
+        if (alt >  5) return 'day';
+        if (alt > -6) return rising ? 'dawn' : 'dusk';
+        return 'night';
+    }
+
+    function applyDayNight() {
+        if (!map.isStyleLoaded()) return;
+        const c   = map.getCenter();
+        const now = Date.now();
+        const { alt, az } = getSunPos(now, c.lat, c.lng);
+        const rising      = getSunPos(now + 600000, c.lat, c.lng).alt > alt; // ¿sol subiendo?
+        const preset      = sunPreset(alt, rising);
+
+        // --- lightPreset (Mapbox Standard y Standard-Satellite) ---
+        try { map.setConfigProperty('basemap', 'lightPreset', preset); } catch(_) {}
+
+        // --- Capa sky (todos los estilos) ---
+        const zenith = 90 - alt;
+        if (!map.getLayer('sky-dn')) {
+            map.addLayer({
+                id: 'sky-dn', type: 'sky',
+                paint: {
+                    'sky-type': 'atmosphere',
+                    'sky-atmosphere-sun': [az, zenith],
+                    'sky-atmosphere-sun-intensity': Math.max(5, Math.min(15, alt + 15)),
+                    'sky-opacity': ['interpolate', ['linear'], ['zoom'], 0, 0, 5, 0.4, 8, 1.0]
+                }
+            });
+        } else {
+            map.setPaintProperty('sky-dn', 'sky-atmosphere-sun', [az, zenith]);
+            map.setPaintProperty('sky-dn', 'sky-atmosphere-sun-intensity', Math.max(5, Math.min(15, alt + 15)));
+        }
+
+        // --- Fog: espacio + estrellas según altitud solar ---
+        const stars = alt < -6 ? 0.75 : alt < 0 ? 0.35 + (-alt / 6) * 0.40 : 0;
+        map.setFog({
+            'color':          alt > 8 ? 'rgb(200,220,240)' : alt > 0 ? 'rgb(160,140,110)' : 'rgb(10,15,40)',
+            'high-color':     alt > 8 ? 'rgb(40,100,230)'  : alt > 0 ? 'rgb(80,60,130)'   : 'rgb(5,8,30)',
+            'horizon-blend':  0.03,
+            'space-color':    alt > 8 ? 'rgb(20,30,70)'    : alt < -6 ? 'rgb(3,3,12)'    : 'rgb(10,12,35)',
+            'star-intensity': stars
+        });
+    }
+
+    function removeDayNight() {
+        try { map.setConfigProperty('basemap', 'lightPreset', 'day'); } catch(_) {}
+        try { if (map.getLayer('sky-dn')) map.removeLayer('sky-dn'); } catch(_) {}
+        try { map.setFog(null); } catch(_) {}
+    }
+
     // ---- Añadir todas las capas (y re-añadir tras cambio de estilo) ----
     function addAllCustomLayers() {
         addTerrain();
@@ -1318,6 +1392,7 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
     map.on('style.load', () => {
         if (dataReady) addAllCustomLayers();
         else addTerrain();
+        if (dayNightEnabled) setTimeout(applyDayNight, 100);
         if (activeRouteCallsign) {
             const cs = activeRouteCallsign;
             activeRouteCallsign = null;
@@ -1515,6 +1590,26 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
             }
 
         }
+
+        // ── Ambiente ──
+        const dnTitle = document.createElement('div');
+        dnTitle.className = 'lp-title'; dnTitle.style.marginTop = '10px'; dnTitle.textContent = 'Ambiente';
+        panel.appendChild(dnTitle);
+        const dnLbl = document.createElement('label'); dnLbl.className = 'lp-row';
+        const dnCb  = document.createElement('input'); dnCb.type = 'checkbox'; dnCb.checked = dayNightEnabled;
+        dnCb.addEventListener('change', () => {
+            dayNightEnabled = dnCb.checked;
+            if (dayNightEnabled) {
+                applyDayNight();
+                dayNightTimer = setInterval(applyDayNight, 60000);
+            } else {
+                clearInterval(dayNightTimer); dayNightTimer = null;
+                removeDayNight();
+            }
+        });
+        dnLbl.appendChild(dnCb);
+        dnLbl.appendChild(document.createTextNode(' Iluminación solar'));
+        panel.appendChild(dnLbl);
 
         // ── Sección aeronaves ──
         const acTitle = document.createElement('div');
