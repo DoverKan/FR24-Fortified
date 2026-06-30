@@ -1751,21 +1751,18 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
         const chord = Math.hypot(dx, dy);
         if (chord < 2) return;
 
-        // Altura del arco: 35% de la cuerda, entre 60 y 380px
         const arcH = Math.min(Math.max(chord * 0.35, 60), 380);
-
-        // Perpendicular a la cuerda apuntando hacia arriba en pantalla
         let nx = -dy / chord, ny = dx / chord;
         if (ny > 0) { nx = -nx; ny = -ny; }
 
-        // Punto de control del Bezier cuadrático
-        const cx = ((p1.x + p2.x) / 2 + nx * arcH) * dpr;
-        const cy = ((p1.y + p2.y) / 2 + ny * arcH) * dpr;
+        // Punto de control en CSS px (sin dpr, para usar en el cálculo del Bezier)
+        const cpx = (p1.x + p2.x) / 2 + nx * arcH;
+        const cpy = (p1.y + p2.y) / 2 + ny * arcH;
 
         // Arco
         ctx.beginPath();
         ctx.moveTo(p1.x * dpr, p1.y * dpr);
-        ctx.quadraticCurveTo(cx, cy, p2.x * dpr, p2.y * dpr);
+        ctx.quadraticCurveTo(cpx * dpr, cpy * dpr, p2.x * dpr, p2.y * dpr);
         ctx.strokeStyle = 'rgba(96,165,250,0.90)';
         ctx.lineWidth = 2.5 * dpr;
         ctx.setLineDash([10 * dpr, 6 * dpr]);
@@ -1782,6 +1779,45 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
             ctx.fill();
             ctx.stroke();
         });
+
+        // ── Avión sobre el arco ──
+        if (activeRouteCallsign) {
+            const acData = Object.values(AC).find(a =>
+                a.callsign && a.callsign.trim().toUpperCase() === activeRouteCallsign
+            );
+            if (acData && acData.lat != null && acData.lon != null) {
+                // Fracción t recorrida sobre la ruta (distancia origen→avión / total)
+                const totalD = distMeters(lat1, lng1, lat2, lng2);
+                const currD  = distMeters(lat1, lng1, acData.lat, acData.lon);
+                const t = Math.min(Math.max(currD / totalD, 0.02), 0.98);
+
+                // Punto sobre la curva Bezier cuadrática (CSS px)
+                const bx = (1-t)*(1-t)*p1.x + 2*(1-t)*t*cpx + t*t*p2.x;
+                const by = (1-t)*(1-t)*p1.y + 2*(1-t)*t*cpy + t*t*p2.y;
+
+                // Tangente de la curva en t → ángulo de rotación del icono
+                const tax = 2*(1-t)*(cpx - p1.x) + 2*t*(p2.x - cpx);
+                const tay = 2*(1-t)*(cpy - p1.y) + 2*t*(p2.y - cpy);
+                const angle = Math.atan2(tay, tax) + Math.PI / 2;
+
+                const s = 9 * dpr;
+                ctx.save();
+                ctx.translate(bx * dpr, by * dpr);
+                ctx.rotate(angle);
+                ctx.beginPath();
+                ctx.moveTo(0, -s * 1.8);           // morro
+                ctx.lineTo(s * 0.75,  s * 0.5);    // ala derecha
+                ctx.lineTo(0,          s * 0.3);    // cola centro
+                ctx.lineTo(-s * 0.75, s * 0.5);    // ala izquierda
+                ctx.closePath();
+                ctx.fillStyle = '#fbbf24';
+                ctx.strokeStyle = 'rgba(8,14,30,.85)';
+                ctx.lineWidth = 1 * dpr;
+                ctx.fill();
+                ctx.stroke();
+                ctx.restore();
+            }
+        }
     }
 
     function ensureRoutePtsSource() {
