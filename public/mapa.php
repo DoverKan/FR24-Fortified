@@ -214,6 +214,7 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
     let trailsBtnEl    = null;
     const rvState    = { layers: [], current: 0, visible: true, playing: false, timer: null };
     const rvSatState = { layers: [], current: 0, visible: true, playing: false, timer: null };
+    const radarState = { visible: false, animId: null, canvas: null, angle: -Math.PI / 2, startFn: null, stopFn: null };
     let firmsData = null;
 
     map.addControl(new mapboxgl.FullscreenControl(), 'top-right');
@@ -1075,6 +1076,155 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
         layerGroups['rvsatellite'].ids = ['gibs-sat'];
     }
 
+    // ---- Radar sweep (canvas overlay) ----
+    function addRadarSweep() {
+        if (lat === null || lon === null) return;
+        if (radarState.canvas) return; // idempotente — solo se configura una vez
+
+        const mapEl = document.getElementById('map');
+        const canvas = document.createElement('canvas');
+        canvas.id = 'radar-canvas';
+        canvas.style.cssText = 'position:absolute;top:0;left:0;pointer-events:none;z-index:6;display:none';
+        mapEl.appendChild(canvas);
+        radarState.canvas = canvas;
+
+        function resize() {
+            canvas.width  = mapEl.clientWidth;
+            canvas.height = mapEl.clientHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+        map.on('resize', resize);
+
+        const MIN_NM    = 250;          // radio mínimo cuando no hay aviones
+        const SWEEP_ARC = Math.PI / 5;  // ~36° de estela
+        const SPEED     = 0.012;        // rad/frame ≈ 1 vuelta en ~6 s
+
+        function getFurthestNM() {
+            let maxDist = 0;
+            Object.values(AC).forEach(a => {
+                if (a.lat == null || a.lon == null) return;
+                const d = distMeters(lat, lon, a.lat, a.lon);
+                if (d > maxDist) maxDist = d;
+            });
+            return maxDist > 0 ? maxDist / 1852 : MIN_NM;
+        }
+
+        function getPixelRadius() {
+            const nm = getFurthestNM();
+            const R  = 6371000, r = nm * 1852;
+            const φ1 = lat * Math.PI / 180;
+            const φ2 = Math.asin(Math.sin(φ1) * Math.cos(r / R) + Math.cos(φ1) * Math.sin(r / R));
+            const ctr = map.project([lon, lat]);
+            const top = map.project([lon, φ2 * 180 / Math.PI]);
+            return Math.hypot(top.x - ctr.x, top.y - ctr.y);
+        }
+
+        const radarHits = {}; // hex → timestamp del último barrido
+
+        function blendHex(from, to, t) {
+            const p = c => parseInt(c, 16);
+            const fr = p(from.slice(1,3)), fg = p(from.slice(3,5)), fb = p(from.slice(5,7));
+            const tr = p(to.slice(1,3)),   tg = p(to.slice(3,5)),   tb = p(to.slice(5,7));
+            const r = Math.round(fr * t + tr * (1-t));
+            const g = Math.round(fg * t + tg * (1-t));
+            const b = Math.round(fb * t + tb * (1-t));
+            return `rgb(${r},${g},${b})`;
+        }
+
+        function drawFrame() {
+            const ctx    = canvas.getContext('2d');
+            const ctr    = map.project([lon, lat]);
+            const radius = getPixelRadius();
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Estela: sectores con opacidad creciente, recortados al círculo del radar
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(ctr.x, ctr.y, radius, 0, Math.PI * 2);
+            ctx.clip();
+            const SLICES = 36;
+            for (let i = 0; i < SLICES; i++) {
+                const a0 = radarState.angle - SWEEP_ARC + (SWEEP_ARC / SLICES) * i;
+                const a1 = a0 + SWEEP_ARC / SLICES + 0.005;
+                ctx.beginPath();
+                ctx.moveTo(ctr.x, ctr.y);
+                ctx.arc(ctr.x, ctr.y, radius, a0, a1);
+                ctx.closePath();
+                ctx.fillStyle = `rgba(0,220,80,${(i / SLICES) * 0.45})`;
+                ctx.fill();
+            }
+            ctx.restore();
+
+            // Línea de barrido
+            ctx.beginPath();
+            ctx.moveTo(ctr.x, ctr.y);
+            ctx.lineTo(
+                ctr.x + Math.cos(radarState.angle) * radius,
+                ctr.y + Math.sin(radarState.angle) * radius
+            );
+            ctx.strokeStyle = 'rgba(0,255,100,0.95)';
+            ctx.lineWidth   = 2;
+            ctx.shadowColor = 'rgba(0,255,100,0.6)';
+            ctx.shadowBlur  = 8;
+            ctx.stroke();
+
+            // Punto central
+            ctx.beginPath();
+            ctx.arc(ctr.x, ctr.y, 4, 0, Math.PI * 2);
+            ctx.fillStyle   = 'rgba(0,255,100,0.9)';
+            ctx.shadowColor = 'rgba(0,255,100,0.8)';
+            ctx.shadowBlur  = 10;
+            ctx.fill();
+            ctx.shadowBlur = 0;
+
+            // Iluminación de aviones al paso del barrido
+            const SWEEP_TOL = 0.06; // ~3.4° de tolerancia
+            const FADE_MS   = 3500;
+            const now = Date.now();
+            Object.values(AC).forEach(a => {
+                if (a.lat == null || a.lon == null) return;
+                const apt = map.project([a.lon, a.lat]);
+                const bearing = Math.atan2(apt.y - ctr.y, apt.x - ctr.x);
+                let diff = radarState.angle - bearing;
+                diff = ((diff % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+                if (diff > Math.PI) diff -= Math.PI * 2;
+                if (Math.abs(diff) < SWEEP_TOL) radarHits[a.hex] = now;
+
+                const mkr = acMkrs[a.hex];
+                if (!mkr) return;
+                const poly = mkr.el.querySelector('polygon');
+                if (!poly) return;
+                const hit = radarHits[a.hex];
+                if (!hit) return;
+                const age = now - hit;
+                if (age >= FADE_MS) return;
+                const t = 1 - age / FADE_MS;
+                const base = (a.squawk && EMERGENCY_SQ.has(a.squawk)) ? '#ef4444'
+                           : a.ground ? '#94a3b8' : altColor(a.alt);
+                poly.setAttribute('fill', blendHex('#ffffff', base, t));
+            });
+
+            radarState.angle += SPEED;
+            if (radarState.angle > Math.PI * 1.5) radarState.angle -= Math.PI * 2;
+            radarState.animId = requestAnimationFrame(drawFrame);
+        }
+
+        radarState.startFn = () => {
+            canvas.style.display = '';
+            radarState.visible   = true;
+            if (!radarState.animId) drawFrame();
+        };
+
+        radarState.stopFn = () => {
+            canvas.style.display = 'none';
+            radarState.visible   = false;
+            if (radarState.animId) { cancelAnimationFrame(radarState.animId); radarState.animId = null; }
+            canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+        };
+    }
+
     // ---- FIRMS (incendios activos) ----
     function applyFirmsData(geojson) {
         if (!map.getSource('firms')) {
@@ -1160,6 +1310,7 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
         addRainViewer();
         addSatelliteGIBS();
         addFirms();
+        addRadarSweep();
         markersAdded = true;
         buildLayerPanel();
     }
@@ -1167,6 +1318,11 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
     map.on('style.load', () => {
         if (dataReady) addAllCustomLayers();
         else addTerrain();
+        if (activeRouteCallsign) {
+            const cs = activeRouteCallsign;
+            activeRouteCallsign = null;
+            setTimeout(() => window.__fr24DrawRoute(cs), 150);
+        }
     });
 
     // ---- Cargar GeoJSON ----
@@ -1341,6 +1497,23 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
                 panel.appendChild(rvWrap);
             }
 
+            // ── Radar sweep ──
+            if (radarState.canvas) {
+                const radarLbl = document.createElement('label');
+                radarLbl.className = 'lp-row';
+                const radarCb = document.createElement('input');
+                radarCb.type = 'checkbox';
+                radarCb.checked = radarState.visible;
+                radarCb.style.cursor = 'pointer';
+                radarCb.addEventListener('change', () => {
+                    if (radarCb.checked) radarState.startFn?.();
+                    else radarState.stopFn?.();
+                });
+                radarLbl.appendChild(radarCb);
+                radarLbl.appendChild(document.createTextNode(' Radar sweep'));
+                panel.appendChild(radarLbl);
+            }
+
         }
 
         // ── Sección aeronaves ──
@@ -1395,6 +1568,7 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
     const AC          = {};
     const acMkrs      = {};   // hex → { marker: mapboxgl.Marker, el: HTMLElement }
     const acTrailPts  = {};   // hex → { points: [[lng,lat],...], color: string }
+    const routeCache  = {};   // callsign → { origin, dest } | null
     const EMERGENCY_SQ = new Set(['7500', '7600', '7700']);
     let acVisible      = true;
     let acTrailsVisible = true;
@@ -1433,21 +1607,224 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
         if (poly) poly.setAttribute('fill', color);
     }
 
-    function acPopupHtml(a) {
+    function acPopupHtml(a, route) {
         const altStr = a.alt   != null ? a.alt.toLocaleString('es-ES') + ' ft' : '—';
         const spdStr = a.speed != null ? a.speed + ' kt' : '—';
         const hdgStr = a.track != null ? Math.round(a.track) + '°' : '—';
         const vrStr  = a.vrate != null ? (a.vrate >= 0 ? '+' : '') + a.vrate + ' ft/min' : '';
         const squawk = a.squawk ? ' · ' + a.squawk : '';
+        let routeRow = '';
+        if (a.callsign) {
+            if (route === undefined)
+                routeRow = '<div style="color:#555;font-size:11px;margin-bottom:3px">Ruta: …</div>';
+            else if (route) {
+                const cs2      = a.callsign ? a.callsign.trim().toUpperCase() : null;
+                const hasCoord = route.originLat != null;
+                const isActive = cs2 && activeRouteCallsign === cs2;
+                const dianaBtn = (hasCoord && cs2)
+                    ? `<button onclick="window.__fr24DrawRoute('${cs2}')" title="${isActive ? 'Ocultar ruta' : 'Trazar ruta en mapa'}" `
+                      + `style="background:none;border:none;cursor:pointer;padding:0 0 0 5px;color:${isActive ? '#f59e0b' : '#60a5fa'};display:inline-flex;align-items:center">`
+                      + `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">`
+                      + `<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3" fill="currentColor" stroke="none"/>`
+                      + `<line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/>`
+                      + `<line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/>`
+                      + `</svg></button>`
+                    : '';
+                routeRow = `<div style="margin-bottom:4px;display:flex;align-items:center;gap:2px">`
+                         + `<span style="color:#60a5fa;font-weight:700">${route.origin}</span>`
+                         + `<span style="color:#555"> → </span>`
+                         + `<span style="color:#60a5fa;font-weight:700">${route.dest}</span>`
+                         + dianaBtn + `</div>`;
+            }
+        }
         return `<div style="font-size:12px;line-height:1.7;min-width:140px">
             <div style="font-size:14px;font-weight:700;margin-bottom:2px">${a.callsign || a.hex}</div>
-            <div style="color:#94a3b8;font-size:11px;margin-bottom:6px">${a.hex}${squawk}</div>
-            <div>↕ ${altStr}</div>
+            <div style="color:#94a3b8;font-size:11px;margin-bottom:4px">${a.hex}${squawk}</div>
+            ${routeRow}<div>↕ ${altStr}</div>
             <div>→ ${spdStr} &nbsp;⬆ ${hdgStr}</div>
             ${vrStr ? '<div>' + vrStr + '</div>' : ''}
             ${a.ground ? '<div style="color:#fbbf24">En tierra</div>' : ''}
         </div>`;
     }
+
+    function getRouteForAc(a) {
+        const cs = a.callsign ? a.callsign.trim().toUpperCase() : null;
+        return cs ? routeCache[cs] : null;
+    }
+
+    function fetchRoute(callsign, hex) {
+        if (!callsign) return;
+        const cs = callsign.trim().toUpperCase();
+        if (routeCache[cs] !== undefined) {
+            // Ya en caché — actualizar popup si está abierto
+            const mkr = acMkrs[hex];
+            if (mkr) {
+                const pop = mkr.marker.getPopup();
+                if (pop && pop.isOpen()) pop.setHTML(acPopupHtml(AC[hex], routeCache[cs]));
+            }
+            return;
+        }
+        routeCache[cs] = null; // marcar como "en curso"
+        fetch(`https://api.adsbdb.com/v0/callsign/${encodeURIComponent(cs)}`)
+            .then(r => { if (!r.ok) throw new Error('no route'); return r.json(); })
+            .then(data => {
+                const fr = data?.response?.flightroute;
+                if (fr?.origin && fr?.destination) {
+                    const origin = fr.origin.icao_code || fr.origin.iata_code || fr.origin.name || '?';
+                    const dest   = fr.destination.icao_code || fr.destination.iata_code || fr.destination.name || '?';
+                    routeCache[cs] = { origin, dest,
+                        originLat: fr.origin.latitude,      originLng: fr.origin.longitude,
+                        destLat:   fr.destination.latitude, destLng:   fr.destination.longitude };
+                }
+            })
+            .catch(() => {})
+            .finally(() => {
+                const mkr = acMkrs[hex];
+                if (!mkr) return;
+                const pop = mkr.marker.getPopup();
+                if (pop && pop.isOpen()) pop.setHTML(acPopupHtml(AC[hex], routeCache[cs]));
+            });
+    }
+
+    // ---- Ruta de vuelo en mapa ----
+    let activeRouteCallsign = null;
+
+    function geodesicLine(lng1, lat1, lng2, lat2, steps) {
+        const D2R = Math.PI / 180, R2D = 180 / Math.PI;
+        const φ1 = lat1 * D2R, λ1 = lng1 * D2R;
+        const φ2 = lat2 * D2R, λ2 = lng2 * D2R;
+        const d  = 2 * Math.asin(Math.sqrt(
+            Math.sin((φ2-φ1)/2)**2 + Math.cos(φ1)*Math.cos(φ2)*Math.sin((λ2-λ1)/2)**2
+        ));
+        if (d < 1e-9) return [[lng1, lat1, 0], [lng2, lat2, 0]];
+        const distM  = d * 6371000;
+        const maxAlt = Math.min(distM * 0.10, 1500000); // 10 % de la distancia, tope 1500 km
+        const pts = [];
+        for (let i = 0; i <= steps; i++) {
+            const f = i / steps;
+            const A = Math.sin((1-f)*d)/Math.sin(d), B = Math.sin(f*d)/Math.sin(d);
+            const x = A*Math.cos(φ1)*Math.cos(λ1) + B*Math.cos(φ2)*Math.cos(λ2);
+            const y = A*Math.cos(φ1)*Math.sin(λ1) + B*Math.cos(φ2)*Math.sin(λ2);
+            const z = A*Math.sin(φ1) + B*Math.sin(φ2);
+            const alt = Math.sin(f * Math.PI) * maxAlt;
+            pts.push([Math.atan2(y, x)*R2D, Math.atan2(z, Math.sqrt(x*x+y*y))*R2D, alt]);
+        }
+        return pts;
+    }
+
+    // ---- Arco de ruta (canvas overlay, igual que el radar) ----
+    let arcCanvas    = null;
+    let arcEndpoints = null; // [lng1, lat1, lng2, lat2]
+
+    function ensureArcCanvas() {
+        if (arcCanvas) return;
+        const mapEl = document.getElementById('map');
+        arcCanvas = document.createElement('canvas');
+        arcCanvas.id = 'route-arc-canvas';
+        arcCanvas.style.cssText = 'position:absolute;top:0;left:0;pointer-events:none;z-index:5;display:none';
+        mapEl.appendChild(arcCanvas);
+
+        const resize = () => {
+            const dpr = window.devicePixelRatio || 1;
+            arcCanvas.width  = mapEl.clientWidth  * dpr;
+            arcCanvas.height = mapEl.clientHeight * dpr;
+            arcCanvas.style.width  = mapEl.clientWidth  + 'px';
+            arcCanvas.style.height = mapEl.clientHeight + 'px';
+        };
+        resize();
+        window.addEventListener('resize', resize);
+        map.on('resize', resize);
+        map.on('render', drawArcOnCanvas);
+    }
+
+    function drawArcOnCanvas() {
+        if (!arcCanvas || !arcEndpoints || arcCanvas.style.display === 'none') return;
+        const dpr = window.devicePixelRatio || 1;
+        const ctx = arcCanvas.getContext('2d');
+        ctx.clearRect(0, 0, arcCanvas.width, arcCanvas.height);
+
+        const [lng1, lat1, lng2, lat2] = arcEndpoints;
+        const p1 = map.project([lng1, lat1]);
+        const p2 = map.project([lng2, lat2]);
+
+        const dx = p2.x - p1.x, dy = p2.y - p1.y;
+        const chord = Math.hypot(dx, dy);
+        if (chord < 2) return;
+
+        // Altura del arco: 35% de la cuerda, entre 60 y 380px
+        const arcH = Math.min(Math.max(chord * 0.35, 60), 380);
+
+        // Perpendicular a la cuerda apuntando hacia arriba en pantalla
+        let nx = -dy / chord, ny = dx / chord;
+        if (ny > 0) { nx = -nx; ny = -ny; }
+
+        // Punto de control del Bezier cuadrático
+        const cx = ((p1.x + p2.x) / 2 + nx * arcH) * dpr;
+        const cy = ((p1.y + p2.y) / 2 + ny * arcH) * dpr;
+
+        // Arco
+        ctx.beginPath();
+        ctx.moveTo(p1.x * dpr, p1.y * dpr);
+        ctx.quadraticCurveTo(cx, cy, p2.x * dpr, p2.y * dpr);
+        ctx.strokeStyle = 'rgba(96,165,250,0.90)';
+        ctx.lineWidth = 2.5 * dpr;
+        ctx.setLineDash([10 * dpr, 6 * dpr]);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Puntos en los extremos
+        [p1, p2].forEach(p => {
+            ctx.beginPath();
+            ctx.arc(p.x * dpr, p.y * dpr, 5 * dpr, 0, Math.PI * 2);
+            ctx.fillStyle = '#60a5fa';
+            ctx.strokeStyle = 'rgba(8,14,30,.9)';
+            ctx.lineWidth = 1.5 * dpr;
+            ctx.fill();
+            ctx.stroke();
+        });
+    }
+
+    function ensureRoutePtsSource() {
+        if (!map.isStyleLoaded()) return false;
+        if (!map.getSource('fr-route-pts')) {
+            map.addSource('fr-route-pts', { type: 'geojson', data: { type: 'FeatureCollection', features: [] } });
+            map.addLayer({ id: 'fr-route-label-lyr', type: 'symbol', source: 'fr-route-pts',
+                layout: { 'text-field': ['get', 'label'], 'text-size': 12, 'text-font': [GLYPHS_FONT], 'text-anchor': 'bottom', 'text-offset': [0, -0.9] },
+                paint: { 'text-color': '#93c5fd', 'text-halo-color': 'rgba(8,14,30,.9)', 'text-halo-width': 1.5 }
+            });
+        }
+        return true;
+    }
+
+    function clearFlightRoute() {
+        activeRouteCallsign = null;
+        arcEndpoints = null;
+        if (arcCanvas) {
+            arcCanvas.style.display = 'none';
+            arcCanvas.getContext('2d').clearRect(0, 0, arcCanvas.width, arcCanvas.height);
+        }
+        if (map.getSource('fr-route-pts'))
+            map.getSource('fr-route-pts').setData({ type: 'FeatureCollection', features: [] });
+    }
+
+    window.__fr24DrawRoute = function(cs) {
+        if (activeRouteCallsign === cs) { clearFlightRoute(); return; }
+        const route = routeCache[cs];
+        if (!route || route.originLat == null) return;
+        if (!ensureRoutePtsSource()) return;
+        ensureArcCanvas();
+        arcEndpoints = [route.originLng, route.originLat, route.destLng, route.destLat];
+        arcCanvas.style.display = '';
+        map.getSource('fr-route-pts').setData({ type: 'FeatureCollection', features: [
+            { type: 'Feature', properties: { label: route.origin }, geometry: { type: 'Point', coordinates: [route.originLng, route.originLat] } },
+            { type: 'Feature', properties: { label: route.dest   }, geometry: { type: 'Point', coordinates: [route.destLng,   route.destLat  ] } },
+        ]});
+        activeRouteCallsign = cs;
+        const bounds = new mapboxgl.LngLatBounds()
+            .extend([route.originLng, route.originLat])
+            .extend([route.destLng,   route.destLat]);
+        map.fitBounds(bounds, { padding: 80, maxZoom: 12, pitch: 45, bearing: 0, animate: true, duration: 1800 });
+    };
 
     function parseSBS(line) {
         const f = line.split(',');
@@ -1537,13 +1914,13 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
                 acMkrs[a.hex].marker.setLngLat([a.lon, a.lat]);
                 updateAcEl(acMkrs[a.hex].el, a.track, a.alt, a.ground, a.squawk);
                 const pop = acMkrs[a.hex].marker.getPopup();
-                if (pop && pop.isOpen()) pop.setHTML(acPopupHtml(a));
+                if (pop && pop.isOpen()) pop.setHTML(acPopupHtml(a, getRouteForAc(a)));
             } else {
                 const el = makeAcEl(a.track, a.alt, a.ground, a.squawk);
-                el.addEventListener('click', () => { selectedHex = a.hex; updateFollowBtn(); });
+                el.addEventListener('click', () => { selectedHex = a.hex; updateFollowBtn(); fetchRoute(a.callsign, a.hex); });
                 const marker = new mapboxgl.Marker({ element: el, anchor: 'center' })
                     .setLngLat([a.lon, a.lat])
-                    .setPopup(new mapboxgl.Popup({ maxWidth: '220px', offset: 14 }).setHTML(acPopupHtml(a)))
+                    .setPopup(new mapboxgl.Popup({ maxWidth: '220px', offset: 14 }).setHTML(acPopupHtml(a, getRouteForAc(a))))
                     .addTo(map);
                 if (!acVisible) el.style.display = 'none';
                 acMkrs[a.hex] = { marker, el };
