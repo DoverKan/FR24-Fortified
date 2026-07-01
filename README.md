@@ -1,6 +1,6 @@
 # FlightRadar24-Fortified
 
-Panel de monitoreo web para receptores ADS-B de FlightRadar24 (Feeder y Box). Muestra en tiempo real el estado del receptor, estadísticas de vuelos y un mapa interactivo de posiciones de aeronaves con capas meteorológicas y de situación.
+Panel de monitoreo web para receptores ADS-B de FlightRadar24 (Feeder y Box). Muestra en tiempo real el estado del receptor, estadísticas de vuelos y un mapa interactivo de posiciones de aeronaves con capas meteorológicas, de situación aérea y espacios aéreos.
 
 **Repositorio:** https://github.com/DoverKan/FR24-Fortified
 
@@ -9,17 +9,22 @@ Panel de monitoreo web para receptores ADS-B de FlightRadar24 (Feeder y Box). Mu
 ## Características
 
 - **Dashboard en tiempo real** — estado del receptor, estadísticas y tabla de vuelos activos con auto-refresco
-- **Mapa interactivo** — Mapbox GL con múltiples estilos de base (oscuro, calles, satélite, terreno) y capas GeoJSON configurables
+- **Mapa interactivo** — Mapbox GL con múltiples estilos de base (oscuro, calles, satélite, terreno, Standard) y capas GeoJSON configurables
 - **Seguimiento de aeronaves** — posiciones, rumbo, altitud y tracks históricos en tiempo real vía stream SBS (puerto 30003); iconos con código de colores por altitud y alerta de squawk de emergencia
-- **Controles del mapa** — centrar en todos los aviones, seguir un avión seleccionado, retener tracks ilimitados, exportar el mapa como PNG, anillos de distancia NM, perfil de elevación, regla de medición
-- **Capas meteorológicas** — radar de precipitación animado (RainViewer) con datos de los últimos ~40 min, e imagen de nubosidad diaria por satélite (NASA GIBS / MODIS Terra)
-- **Incendios activos** — capa FIRMS (NASA) con puntos interactivos en tiempo real; muestra satélite de detección, confianza, FRP (Fire Radiative Power) y hora UTC
+- **Controles del mapa** — centrar en todos los aviones, seguir un avión seleccionado, retener tracks ilimitados, exportar como PNG, anillos de distancia NM, perfil de elevación, regla de medición, inspección de coordenadas
+- **Ruta de vuelo** — arco geodésico origen → destino con avión animado sobre la curva; datos de ruta obtenidos automáticamente desde adsbdb.com
+- **Capas meteorológicas RainViewer** — radar de precipitación animado (~40 min, 8 fotogramas) y satélite de nubosidad (NASA GIBS / MODIS Terra)
+- **Capas meteorológicas OWM** — viento, presión e isobares y precipitación en tiempo real (OpenWeatherMap), cada una con toggle independiente en el panel de capas
+- **Incendios activos** — capa FIRMS (NASA) con puntos interactivos; muestra satélite, confianza, FRP y hora UTC
+- **Espacios aéreos (OpenAIP)** — CTR, TMA, ATZ, zonas restringidas, peligrosas y prohibidas con popup de clase ICAO, base y techo; datos cargados vía proxy PHP (clave nunca expuesta al navegador)
 - **Capas GeoJSON** — espacio aéreo (CTR, LER, sectores), aeropuertos, VOR/DME, puntos visuales, helipuertos, hospitales, antenas, nodos Meshtastic y cualquier GeoJSON personalizado
-- **Edificios 3D y terreno** — extrusión de edificios y elevación del terreno (requiere token Mapbox)
+- **Edificios 3D y terreno** — extrusión de edificios por tipo y elevación del terreno (requiere token Mapbox)
 - **Capa de tráfico** — tráfico rodado en tiempo real (requiere token Mapbox)
-- **Consola SBS** — stream en tiempo real del protocolo SBS (puerto 30003) vía Server-Sent Events
+- **Radar sweep** — animación de barrido radar canvas sobre la posición del receptor con iluminación de aeronaves al paso del haz
+- **Iluminación solar** — capa sky + fog dinámica calculando posición real del sol (amanecer, día, atardecer, noche, estrellas)
+- **Dibujo libre** — herramienta de trazado de polígonos, líneas y puntos sobre el mapa
+- **Consola SBS** — stream en tiempo real del protocolo SBS vía Server-Sent Events
 - **Soporte dual** — compatible con receptores tipo `feeder` y tipo `box`
-- **Versión standalone** — archivo único `fr24-standalone.php` para despliegue sin configuración adicional
 
 ---
 
@@ -28,8 +33,10 @@ Panel de monitoreo web para receptores ADS-B de FlightRadar24 (Feeder y Box). Mu
 - PHP 7.4 o superior con extensión `curl` habilitada
 - Servidor web Apache (Linux) o XAMPP (Windows)
 - Acceso de red al receptor FlightRadar24 (local o LAN)
-- Token de Mapbox *(solo para la página de mapa)*
-- MAP_KEY de NASA FIRMS *(solo para la capa de incendios)*
+- Token de Mapbox *(opcional — para estilos premium, terreno 3D, edificios y tráfico)*
+- MAP_KEY de NASA FIRMS *(opcional — para capa de incendios)*
+- API Key de OpenWeatherMap *(opcional — para capas de viento, presión y precipitación)*
+- API Key de openAIP.net *(opcional — para espacios aéreos)*
 
 ---
 
@@ -150,9 +157,11 @@ define('LAT',            38.891944);        // Latitud del centro del mapa (opci
 define('LON',            -6.822397);        // Longitud del centro del mapa (opcional)
 define('MAPBOX_TOKEN',   'pk.eyJ...');      // Token de Mapbox — https://account.mapbox.com
 define('FIRMS_MAP_KEY',  'xxxxxxxx');       // MAP_KEY de NASA FIRMS — https://firms.modaps.eosdis.nasa.gov/usfs/api/map_key/
+define('OWM_KEY',        'xxxxxxxx');       // API Key de OpenWeatherMap — https://openweathermap.org/api
+define('OPENAIP_KEY',    'xxxxxxxx');       // API Key de openAIP.net — https://www.openaip.net
 ```
 
-`MAPBOX_TOKEN` y `FIRMS_MAP_KEY` son opcionales. Sin ellos el mapa funciona con cartografía básica de CartoDB y sin la capa de incendios.
+Las claves `MAPBOX_TOKEN`, `FIRMS_MAP_KEY`, `OWM_KEY` y `OPENAIP_KEY` son opcionales. Sin ellas el mapa funciona con cartografía básica de CartoDB y sin las capas que las requieren.
 
 ---
 
@@ -174,8 +183,25 @@ Consulta la guía completa en [docs/geojson.md](docs/geojson.md):
 | Capa | Fuente | Clave necesaria | Notas |
 |---|---|---|---|
 | Radar meteo | RainViewer | No | Animación de los últimos ~40 min (8 fotogramas) |
-| Satélite nubosidad | NASA GIBS / MODIS Terra | No | Imagen del día anterior; desactivada por defecto |
+| Satélite nubosidad | NASA GIBS / MODIS Terra | No | Imagen del día anterior |
 | Incendios activos | NASA FIRMS / VIIRS SNPP | `FIRMS_MAP_KEY` | Últimas 24 h; puntos clicables con detalle |
+| Viento | OpenWeatherMap | `OWM_KEY` | Velocidad del viento como gradiente de color |
+| Presión | OpenWeatherMap | `OWM_KEY` | Isobares; siempre visible con tiempo activo |
+| Precipitación | OpenWeatherMap | `OWM_KEY` | Lluvia y nieve activas |
+
+> Las claves de OWM recién creadas pueden tardar hasta 2 horas en activarse.
+
+### Espacios aéreos (OpenAIP)
+
+Los espacios aéreos se cargan automáticamente al iniciar el mapa si `OPENAIP_KEY` está configurado. Los datos se obtienen directamente desde el navegador (igual que FIRMS y RainViewer), por lo que la clave viaja al cliente en el HTML de la página. Para instalaciones privadas/personales esto es aceptable; si necesitas proteger la clave, usa `airspaces.php` como proxy y ajusta `addOpenAIPLayer()` para apuntar a él. Los datos se cachean en memoria durante la sesión.
+
+| Grupo en el panel | Tipos incluidos | Color | Visible al cargar |
+|---|---|---|---|
+| Restric. / Peligro / Prohib. | P, R, D, ADIZ, Alerta, Aviso | Rojo / naranja | Sí |
+| CTR / TMA / ATZ | CTR, TMA, ATZ, RMZ, TMZ, TRA, TSA, CTA | Azul / cian | Sí |
+| FIR / UIR | FIR, UIR, ACC | Gris | No (oculto por defecto) |
+
+Clic en cualquier espacio aéreo → popup con nombre, clase ICAO, tipo, base y techo.
 
 ### Información de incendios (popup FIRMS)
 
@@ -209,9 +235,11 @@ FR24/
 ├── public/
 │   ├── index.php               # Dashboard principal
 │   ├── mapa.php                # Mapa interactivo de aeronaves
+│   ├── mapa2.php               # Mapa interactivo (variante con botón toggle panel)
 │   ├── console.php             # Consola del stream SBS
 │   ├── data.php                # Endpoint JSON para auto-refresco
 │   ├── sse.php                 # Endpoint Server-Sent Events
+│   ├── airspaces.php           # Proxy PHP para OpenAIP (mantiene la clave en servidor)
 │   ├── fr24-standalone.php     # Versión autónoma en un solo archivo
 │   ├── partials/               # Componentes reutilizables (sidebar, topbar, footer)
 │   ├── css/                    # Hojas de estilo
@@ -228,9 +256,11 @@ FR24/
 |---|---|
 | `/` o `/index.php` | Dashboard principal con estado del receptor y tabla de vuelos |
 | `/mapa.php` | Mapa interactivo con posiciones de aeronaves y capas adicionales |
+| `/mapa2.php` | Variante del mapa con botón de toggle para el panel de capas |
 | `/console.php` | Consola del stream SBS en tiempo real |
 | `/data.php` | API JSON para refresco de datos del dashboard |
 | `/sse.php` | Stream Server-Sent Events (usado por mapa y consola) |
+| `/airspaces.php` | Proxy para OpenAIP API (parámetro opcional `?country=XX`) |
 | `/fr24-standalone.php` | Versión standalone (admite `?action=stream\|ping\|stats\|weather`) |
 
 ---
@@ -267,14 +297,17 @@ define('FR24_TYPE', 'box');
 | Radar / Satélite IR | RainViewer API (gratuita) |
 | Nubosidad satélite | NASA GIBS / MODIS Terra (gratuita) |
 | Incendios | NASA FIRMS / VIIRS SNPP NRT (MAP_KEY gratuita) |
-| HTTP | PHP cURL (peticiones paralelas) |
+| Capas meteorológicas | OpenWeatherMap API (OWM_KEY gratuita) |
+| Espacios aéreos | openAIP.net API (OPENAIP_KEY gratuita) |
+| Rutas de vuelo | adsbdb.com API (gratuita, sin clave) |
+| HTTP | PHP cURL (peticiones paralelas y proxy) |
 | Streaming | Server-Sent Events (SSE) |
 
 ---
 
 ## Seguridad
 
-El archivo `config/config.php` está excluido de git mediante `.gitignore` para evitar exponer credenciales. Usa siempre `config/config.example.php` como base y nunca confirmes el archivo de configuración real al repositorio.
+El archivo `config/config.php` está excluido de git mediante `.gitignore` para evitar exponer credenciales. La clave de Mapbox, FIRMS y OWM se pasan al JS del cliente (patrón estándar en instalaciones personales). La clave de OpenAIP también se pasa al navegador para que éste haga la llamada directamente a la API, ya que PHP/XAMPP en Windows puede tener problemas de resolución DNS con hosts externos. Usa siempre `config/config.example.php` como base y nunca confirmes el archivo de configuración real al repositorio.
 
 ---
 

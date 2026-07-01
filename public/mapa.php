@@ -4,6 +4,7 @@ $errors      = Config::load();
 $mapboxToken = defined('MAPBOX_TOKEN')   ? trim(MAPBOX_TOKEN)   : '';
 $firmsKey    = defined('FIRMS_MAP_KEY') ? trim(FIRMS_MAP_KEY) : '';
 $owmKey      = defined('OWM_KEY')      ? trim(OWM_KEY)      : '';
+$openaipKey  = defined('OPENAIP_KEY')  ? trim(OPENAIP_KEY)  : '';
 $icao        = defined('ICAO') && trim(ICAO) !== '' ? strtoupper(trim(ICAO)) : null;
 $lat         = defined('LAT') ? (float) LAT : null;
 $lon         = defined('LON') ? (float) LON : null;
@@ -157,6 +158,7 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
     const geojsonFiles = <?= json_encode($geojsonFiles) ?>;
     const firmsKey     = <?= json_encode($firmsKey) ?>;
     const owmKey       = <?= json_encode($owmKey) ?>;
+    const openaipKey   = <?= json_encode($openaipKey) ?>;
 
     const center = lon !== null ? [lon, lat] : [-3, 40];
     const zoom   = lat !== null ? 9 : 6;
@@ -628,12 +630,14 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
         if (!map.getLayer(fillId)) {
             map.addLayer({ id: fillId, type: 'fill', source: sourceId,
                 filter: ['any', ['==', ['geometry-type'], 'Polygon'], ['==', ['geometry-type'], 'MultiPolygon']],
+                layout: { visibility: 'visible' },
                 paint: { 'fill-color': ['coalesce', ['get', 'fill'], defaultFill], 'fill-opacity': opacity ?? 0.2 }
             });
         }
         if (!map.getLayer(lineId)) {
             map.addLayer({ id: lineId, type: 'line', source: sourceId,
                 filter: ['any', ['==', ['geometry-type'], 'Polygon'], ['==', ['geometry-type'], 'MultiPolygon']],
+                layout: { visibility: 'visible' },
                 paint: { 'line-color': ['coalesce', ['get', 'fill'], defaultFill], 'line-width': lineWidth ?? 1.5 }
             });
         }
@@ -1409,6 +1413,128 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
         });
     }
 
+    // ---- OpenAIP Espacios Aéreos ----
+    let aipData = null;
+
+    const AIP_TYPE_COLOR = {
+        3: '#dc2626', 1: '#f97316', 2: '#eab308', 12: '#dc2626', 17: '#eab308', 18: '#f59e0b',
+        4: '#3b82f6', 13: '#60a5fa', 5: '#8b5cf6', 6: '#a855f7',
+        7: '#06b6d4', 8: '#0ea5e9', 9: '#0ea5e9', 14: '#6366f1', 26: '#0891b2',
+        10: '#6b7280', 11: '#9ca3af', 27: '#64748b',
+    };
+
+    const AIP_CLASS_MAP = { 0:'A', 1:'B', 2:'C', 3:'D', 4:'E', 5:'F', 6:'G' };
+    const AIP_TYPE_MAP  = {
+        0:'Otro', 1:'Restringida', 2:'Peligrosa', 3:'Prohibida',
+        4:'CTR', 5:'TMZ', 6:'RMZ', 7:'TMA', 8:'TRA', 9:'TSA',
+        10:'FIR', 11:'UIR', 12:'ADIZ', 13:'ATZ', 14:'MATZ',
+        17:'Alerta', 18:'Aviso', 26:'CTA', 27:'ACC',
+    };
+
+    function fmtAipAlt(lim) {
+        if (!lim) return '—';
+        const { value: v = 0, unit: u = 1, referenceDatum: d = 1 } = lim;
+        if (v === 0 && d === 0) return 'GND';
+        if (u === 0) return 'FL' + String(Math.round(v)).padStart(3, '0');
+        if (u === 6) return v + ' m';
+        const ref = ['AGL', 'MSL', 'STD'][d] ?? '';
+        return v.toLocaleString('es-ES') + ' ft' + (ref ? ' ' + ref : '');
+    }
+
+    function aipPopup(p) {
+        const classStr = p.class ? ` <span style="color:#888;font-size:.78rem">(Clase ${p.class})</span>` : '';
+        return `<div style="min-width:160px;font-size:.85rem">
+            <div style="font-weight:700;font-size:1rem;margin-bottom:.15rem">${p.nombre ?? '—'}</div>
+            <div style="color:${p.fill || '#60a5fa'};font-size:.8rem;margin-bottom:.3rem">${p.typeLabel ?? ''}${classStr}</div>
+            <table style="border-collapse:collapse;width:100%">
+                <tr><td style="color:#888;padding:2px 8px 2px 0;white-space:nowrap">Techo</td><td style="color:#ddd">${p.upper ?? '—'}</td></tr>
+                <tr><td style="color:#888;padding:2px 8px 2px 0;white-space:nowrap">Base</td><td style="color:#ddd">${p.lower ?? '—'}</td></tr>
+            </table>
+        </div>`;
+    }
+
+    function applyAIPData(data) {
+        if (!data?.features?.length) return;
+
+        const BUCKET_MAP = {
+            3: 'aip-prohib', 12: 'aip-prohib',
+            1: 'aip-restr',
+            2: 'aip-danger', 17: 'aip-danger', 18: 'aip-danger',
+            4: 'aip-ctr',
+            7: 'aip-tma', 26: 'aip-tma',
+            13: 'aip-atz', 14: 'aip-atz',
+            5: 'aip-rmz', 6: 'aip-rmz', 8: 'aip-rmz', 9: 'aip-rmz',
+            10: 'aip-fir', 11: 'aip-fir', 27: 'aip-fir',
+        };
+
+        const buckets = {
+            'aip-prohib': { label: 'Prohibidas (P)',   color: '#dc2626', lw: 2.0, op: 0.18, features: [] },
+            'aip-restr':  { label: 'Restringidas (R)', color: '#f97316', lw: 1.8, op: 0.15, features: [] },
+            'aip-danger': { label: 'Peligrosas (D)',   color: '#eab308', lw: 1.8, op: 0.14, features: [] },
+            'aip-ctr':    { label: 'CTR',              color: '#3b82f6', lw: 1.5, op: 0.12, features: [] },
+            'aip-tma':    { label: 'TMA / CTA',        color: '#60a5fa', lw: 1.2, op: 0.08, features: [] },
+            'aip-atz':    { label: 'ATZ / MATZ',       color: '#8b5cf6', lw: 1.2, op: 0.10, features: [] },
+            'aip-rmz':    { label: 'RMZ / TMZ / TRA',  color: '#06b6d4', lw: 1.0, op: 0.08, features: [] },
+            'aip-fir':    { label: 'FIR / UIR',        color: '#6b7280', lw: 0.8, op: 0.04, features: [] },
+        };
+
+        data.features.forEach(f => {
+            const t = f.properties.type;
+            f.properties.fill = AIP_TYPE_COLOR[t] || '#94a3b8';
+            const gid = BUCKET_MAP[t] ?? 'aip-rmz';
+            buckets[gid].features.push(f);
+        });
+
+        Object.entries(buckets).forEach(([gid, b]) => {
+            if (!b.features.length) return;
+            const fc = { type: 'FeatureCollection', features: b.features };
+            if (!layerGroups[gid]) layerGroups[gid] = { label: b.label, ids: [], markers: [] };
+            addSource(gid, fc);
+            addPolygonLayers(gid, gid, b.color, b.lw, b.label, aipPopup, b.op, fc);
+            layerGroups[gid].ids.forEach(id => { if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', 'none'); });
+        });
+
+        buildLayerPanel();
+    }
+
+    function addOpenAIPLayer() {
+        if (!openaipKey) return;
+        if (aipData) { applyAIPData(aipData); return; }
+
+        const limit = 1000;
+        const base  = `https://api.core.openaip.net/api/airspaces?country=ES&limit=${limit}&apiKey=${encodeURIComponent(openaipKey)}`;
+
+        const fetchPage = p =>
+            fetch(base + `&page=${p}`)
+                .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); });
+
+        fetchPage(0).then(d => {
+            const items = d.items ?? [];
+            const total = d.totalCount ?? items.length;
+            if (items.length >= total) return items;
+            const extra = [];
+            for (let p = 1; p < Math.min(Math.ceil(total / limit), 10); p++) extra.push(fetchPage(p));
+            return Promise.all(extra).then(pages => items.concat(...pages.map(x => x.items ?? [])));
+        }).then(items => {
+            const features = items
+                .filter(it => it.geometry)
+                .map(it => ({
+                    type: 'Feature',
+                    geometry: it.geometry,
+                    properties: {
+                        nombre:    it.name ?? '',
+                        class:     AIP_CLASS_MAP[it.class] ?? '',
+                        type:      it.type ?? 0,
+                        typeLabel: AIP_TYPE_MAP[it.type ?? 0] ?? 'Otro',
+                        lower:     fmtAipAlt(it.lowerLimit),
+                        upper:     fmtAipAlt(it.upperLimit),
+                    },
+                }));
+            aipData = { type: 'FeatureCollection', features };
+            applyAIPData(aipData);
+        }).catch(err => console.warn('[OpenAIP]', err));
+    }
+
     // ---- Añadir todas las capas (y re-añadir tras cambio de estilo) ----
     function addAllCustomLayers() {
         addTerrain();
@@ -1424,6 +1550,7 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
         addSatelliteGIBS();
         addFirms();
         addWindLayer();
+        addOpenAIPLayer();
         addRadarSweep();
         markersAdded = true;
         buildLayerPanel();
@@ -1533,28 +1660,33 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
         }
 
         const groups = Object.entries(layerGroups);
+        const mkGroupRow = ([groupId, group]) => {
+            const lbl = document.createElement('label');
+            lbl.className = 'lp-row';
+            const cb = document.createElement('input');
+            const firstId = group.ids[0];
+            const isVisible = firstId && map.getLayer(firstId)
+                ? map.getLayoutProperty(firstId, 'visibility') !== 'none'
+                : true;
+            cb.type = 'checkbox'; cb.checked = isVisible;
+            cb.addEventListener('change', () => {
+                const vis = cb.checked ? 'visible' : 'none';
+                group.ids.forEach(id => { if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', vis); });
+                group.markers.forEach(m => { m.marker.getElement().style.display = cb.checked ? '' : 'none'; });
+            });
+            lbl.appendChild(cb);
+            lbl.appendChild(document.createTextNode(' ' + group.label));
+            panel.appendChild(lbl);
+        };
         if (groups.length > 0) {
             const t = document.createElement('div');
             t.className = 'lp-title'; t.style.marginTop = '10px'; t.textContent = 'Capas';
             panel.appendChild(t);
+
+            // Capas normales (excluye rainviewer y aip-*)
             groups.forEach(([groupId, group]) => {
-                if (groupId === 'rainviewer') return;
-                const lbl = document.createElement('label');
-                lbl.className = 'lp-row';
-                const cb = document.createElement('input');
-                const firstId = group.ids[0];
-                const isVisible = firstId && map.getLayer(firstId)
-                    ? map.getLayoutProperty(firstId, 'visibility') !== 'none'
-                    : true;
-                cb.type = 'checkbox'; cb.checked = isVisible;
-                cb.addEventListener('change', () => {
-                    const vis = cb.checked ? 'visible' : 'none';
-                    group.ids.forEach(id => { if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', vis); });
-                    group.markers.forEach(m => { m.marker.getElement().style.display = cb.checked ? '' : 'none'; });
-                });
-                lbl.appendChild(cb);
-                lbl.appendChild(document.createTextNode(' ' + group.label));
-                panel.appendChild(lbl);
+                if (groupId === 'rainviewer' || groupId.startsWith('aip-')) return;
+                mkGroupRow([groupId, group]);
             });
 
             // ── RainViewer ──
@@ -1627,6 +1759,15 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
                 radarLbl.appendChild(radarCb);
                 radarLbl.appendChild(document.createTextNode(' Radar sweep'));
                 panel.appendChild(radarLbl);
+            }
+
+            // ── Espacios Aéreos ──
+            const aipGroups = groups.filter(([gid]) => gid.startsWith('aip-'));
+            if (aipGroups.length > 0) {
+                const st = document.createElement('div');
+                st.className = 'lp-title'; st.style.marginTop = '10px'; st.textContent = 'Espacios Aéreos';
+                panel.appendChild(st);
+                aipGroups.forEach(entry => mkGroupRow(entry));
             }
 
         }
