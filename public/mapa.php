@@ -119,6 +119,9 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
         .mapboxgl-popup-tip { border-top-color: rgba(10,18,35,.95) !important; }
         @keyframes ac-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
         .ac-emergency-pulse { animation: ac-pulse .8s ease-in-out infinite; }
+        @media (max-width: 640px) {
+            #layer-panel { display: none; }
+        }
     </style>
 </head>
 <body class="sidebar-collapsed">

@@ -1,5 +1,6 @@
 # Config con credenciales (usar config.example.php como plantilla)
 config/config.php
+mapa2.php
 
 # Dependencias
 /vendor/
