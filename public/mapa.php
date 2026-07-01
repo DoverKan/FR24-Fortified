@@ -3,6 +3,7 @@ require __DIR__ . '/../src/Config.php';
 $errors      = Config::load();
 $mapboxToken = defined('MAPBOX_TOKEN')   ? trim(MAPBOX_TOKEN)   : '';
 $firmsKey    = defined('FIRMS_MAP_KEY') ? trim(FIRMS_MAP_KEY) : '';
+$owmKey      = defined('OWM_KEY')      ? trim(OWM_KEY)      : '';
 $icao        = defined('ICAO') && trim(ICAO) !== '' ? strtoupper(trim(ICAO)) : null;
 $lat         = defined('LAT') ? (float) LAT : null;
 $lon         = defined('LON') ? (float) LON : null;
@@ -155,6 +156,7 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
     const lon          = <?= json_encode($hasCenter ? $lon : null) ?>;
     const geojsonFiles = <?= json_encode($geojsonFiles) ?>;
     const firmsKey     = <?= json_encode($firmsKey) ?>;
+    const owmKey       = <?= json_encode($owmKey) ?>;
 
     const center = lon !== null ? [lon, lat] : [-3, 40];
     const zoom   = lat !== null ? 9 : 6;
@@ -1373,6 +1375,40 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
         try { map.setFog(null); } catch(_) {}
     }
 
+    // ---- Capas meteorológicas OWM (viento, presión, precipitación) ----
+    const OWM_LAYERS = [
+        { id: 'owm-wind',  src: 'owm-wind-src',  tile: 'wind_new',          label: 'Viento (OWM)',         opacity: 0.80, group: 'owm-wind'  },
+        { id: 'owm-press', src: 'owm-press-src', tile: 'pressure_new',      label: 'Presión (OWM)',        opacity: 0.70, group: 'owm-press' },
+        { id: 'owm-rain',  src: 'owm-rain-src',  tile: 'precipitation_new', label: 'Precipitación (OWM)',  opacity: 0.80, group: 'owm-rain'  },
+    ];
+
+    function addWindLayer() {
+        if (!owmKey) return;
+        OWM_LAYERS.forEach(({ id, src, tile, label, opacity, group }) => {
+            if (!layerGroups[group])
+                layerGroups[group] = { label, ids: [], markers: [] };
+            layerGroups[group].ids = [];
+
+            try { if (map.getLayer(id))  map.removeLayer(id);  } catch (_) {}
+            try { if (map.getSource(src)) map.removeSource(src); } catch (_) {}
+
+            map.addSource(src, {
+                type: 'raster',
+                tiles: ['https://tile.openweathermap.org/map/' + tile + '/{z}/{x}/{y}.png?appid=' + owmKey],
+                tileSize: 256,
+                attribution: '© <a href="https://openweathermap.org" target="_blank" rel="noopener">OpenWeatherMap</a>'
+            });
+            map.addLayer({
+                id,
+                type: 'raster',
+                source: src,
+                layout: { visibility: 'none' },
+                paint: { 'raster-opacity': opacity }
+            });
+            layerGroups[group].ids = [id];
+        });
+    }
+
     // ---- Añadir todas las capas (y re-añadir tras cambio de estilo) ----
     function addAllCustomLayers() {
         addTerrain();
@@ -1387,6 +1423,7 @@ foreach (glob(__DIR__ . '/geojson/*.geojson') as $file) {
         addRainViewer();
         addSatelliteGIBS();
         addFirms();
+        addWindLayer();
         addRadarSweep();
         markersAdded = true;
         buildLayerPanel();
